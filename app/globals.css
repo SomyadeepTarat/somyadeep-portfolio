@@ -1,0 +1,1490 @@
+:root {
+    --bg: #050505;
+    --ink: #f0ece2;
+    --muted: #8c8a83;
+    --gold: #d5a84d;
+    --blue: #7897e8;
+    --line: rgba(255, 255, 255, .13)
+}
+
+* {
+    box-sizing: border-box
+}
+
+html {
+    scroll-behavior: smooth
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Manrope, Arial, sans-serif;
+    overflow-x: hidden
+}
+
+button,
+a {
+    color: inherit;
+    font: inherit
+}
+
+button {
+    cursor: pointer
+}
+
+.cosmic-canvas,
+.cosmic-fallback {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background: radial-gradient(circle at 73% 33%, #181107 0, transparent 28%), #030303
+}
+
+.grain {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    opacity: .07;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E")
+}
+
+.fallback-stars {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(#fff 1px, transparent 1px);
+    background-size: 73px 73px;
+    opacity: .18
+}
+
+.fallback-stars.far {
+    background-size: 121px 121px;
+    transform: rotate(17deg);
+    opacity: .1
+}
+
+.fallback-singularity {
+    position: absolute;
+    width: 35vw;
+    aspect-ratio: 1;
+    right: 8vw;
+    top: 18vh;
+    border-radius: 50%;
+    background: #000;
+    box-shadow: 0 0 5vw #000
+}
+
+.fallback-singularity span {
+    position: absolute;
+    inset: -9%;
+    border: 2px solid #d4a043;
+    border-radius: 50%;
+    transform: rotateX(68deg);
+    box-shadow: 0 0 30px #c88d36
+}
+
+.loader {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #030303;
+    display: grid;
+    place-content: center;
+    text-align: center;
+    transition: opacity .7s, visibility .7s
+}
+
+.loader.is-gone {
+    opacity: 0;
+    visibility: hidden
+}
+
+.loader img {
+    width: 72px;
+    margin: auto
+}
+
+.loader p,
+.loader b {
+    font: 10px DM Mono;
+    letter-spacing: .24em
+}
+
+.loader div {
+    width: 240px;
+    height: 1px;
+    background: #29251d;
+    margin: 22px
+}
+
+.loader div span {
+    display: block;
+    height: 100%;
+    background: var(--gold);
+    transition: width .1s
+}
+
+.nav {
+    height: 88px;
+    padding: 0 4vw;
+    position: fixed;
+    z-index: 30;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(#050505dd, transparent);
+    backdrop-filter: blur(8px)
+}
+
+.brand {
+    border: 0;
+    background: 0;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    gap: 12px;
+    font-size: 11px;
+    letter-spacing: .12em
+}
+
+.brand img {
+    width: 35px
+}
+
+.brand small {
+    font: 8px DM Mono;
+    color: var(--muted)
+}
+
+.nav nav {
+    display: flex;
+    align-items: center;
+    gap: 30px
+}
+
+.nav nav button,
+.menu {
+    border: 0;
+    background: none;
+    text-transform: uppercase;
+    font: 10px DM Mono;
+    letter-spacing: .12em
+}
+
+.nav nav button:hover {
+    color: var(--gold)
+}
+
+.nav .contact-pill {
+    border: 1px solid var(--line);
+    border-radius: 50px;
+    padding: 12px 18px
+}
+
+.menu {
+    display: none
+}
+
+.hero {
+    min-height: 100vh;
+    padding: 145px 4vw 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between
+}
+
+.eyebrow,
+.kicker,
+.section-mark {
+    font: 10px DM Mono;
+    letter-spacing: .2em;
+    color: #b6b2a9
+}
+
+.eyebrow i {
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+    vertical-align: middle;
+    margin: 0 14px
+}
+
+.hero h1 {
+    margin: 4vh 0 2vh;
+    font-size: clamp(88px, 15vw, 220px);
+    line-height: .68;
+    font-weight: 400;
+    letter-spacing: -.085em
+}
+
+.hero-word {
+    display: block;
+    width: max-content
+}
+
+.hero-word.outline {
+    margin-left: 25%;
+    color: transparent;
+    -webkit-text-stroke: 1px #d6d1c5
+}
+
+.hero-word.two {
+    margin-left: auto
+}
+
+.hero-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: end;
+    font-size: 12px
+}
+
+.hero-bottom>button {
+    justify-self: center;
+    border: 0;
+    background: none;
+    font: 10px DM Mono;
+    letter-spacing: .15em
+}
+
+.hero-bottom>button span {
+    display: block;
+    margin-top: 10px;
+    color: var(--gold)
+}
+
+.hero-bottom small {
+    text-align: right;
+    font: 9px DM Mono;
+    color: var(--muted);
+    line-height: 1.8
+}
+
+.section {
+    position: relative;
+    min-height: 100vh;
+    padding: 140px 7vw;
+    border-top: 1px solid var(--line);
+    background: linear-gradient(120deg, rgba(5, 5, 5, .95), rgba(5, 5, 5, .65))
+}
+
+.section-mark {
+    position: absolute;
+    top: 36px;
+    left: 4vw
+}
+
+.origin {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    align-items: center;
+    gap: 7vw
+}
+
+.origin h2,
+.work h2,
+.trajectory h2,
+.capabilities h2,
+.contact h2 {
+    font-size: clamp(54px, 7vw, 110px);
+    font-weight: 300;
+    letter-spacing: -.065em;
+    line-height: .93;
+    margin: 22px 0 35px
+}
+
+.section h2 em {
+    font-family: Georgia, serif;
+    font-weight: 400;
+    color: var(--gold)
+}
+
+.origin-copy>p:last-of-type,
+.work-head>p:last-child {
+    max-width: 630px;
+    color: #aaa79f;
+    line-height: 1.8;
+    font-size: 15px
+}
+
+.coordinates {
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 14px;
+    border-top: 1px solid var(--line);
+    padding-top: 25px
+}
+
+.coordinates span {
+    font: 9px DM Mono;
+    color: var(--muted);
+    letter-spacing: .13em
+}
+
+.coordinates strong {
+    font-weight: 400;
+    font-size: 13px
+}
+
+.portrait-wrap {
+    position: relative;
+    max-width: 520px;
+    margin: auto
+}
+
+.portrait-wrap img {
+    width: 100%;
+    display: block;
+    filter: saturate(.78) contrast(1.08);
+    clip-path: ellipse(43% 49% at 50% 50%)
+}
+
+.portrait-wrap .orbit {
+    position: absolute;
+    inset: 1%;
+    border: 1px solid rgba(213, 168, 77, .4);
+    border-radius: 50%;
+    transform: rotate(17deg);
+    z-index: 2
+}
+
+.portrait-wrap .o2 {
+    inset: -7%;
+    border-color: rgba(120, 151, 232, .25);
+    transform: rotate(-36deg)
+}
+
+.portrait-wrap>span {
+    font: 8px DM Mono;
+    letter-spacing: .18em;
+    position: absolute;
+    bottom: 4%;
+    right: 0
+}
+
+.work-head {
+    max-width: 950px
+}
+
+.work-head>p:last-child {
+    margin-left: auto
+}
+
+.orrery {
+    margin-top: 90px;
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 6vw;
+    align-items: center
+}
+
+.orrery-map {
+    position: relative;
+    aspect-ratio: 1;
+    max-width: 680px
+}
+
+.sun {
+    position: absolute;
+    width: 110px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #060606;
+    box-shadow: 0 0 40px #d6a84f66;
+    border: 1px solid #d6a84f;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    font: 24px Georgia;
+    color: var(--gold)
+}
+
+.orbit-line {
+    position: absolute;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%)
+}
+
+.l1 {
+    width: 43%;
+    height: 43%
+}
+
+.l2 {
+    width: 68%;
+    height: 68%
+}
+
+.l3 {
+    width: 94%;
+    height: 94%
+}
+
+.planet {
+    position: absolute;
+    border: 0;
+    background: none;
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.planet span {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #15130f;
+    border: 1px solid #5d4b28;
+    font: 9px DM Mono;
+    transition: .35s
+}
+
+.planet b {
+    font: 10px DM Mono;
+    letter-spacing: .1em;
+    font-weight: 400;
+    opacity: .55
+}
+
+.planet.active span {
+    background: var(--gold);
+    color: #080604;
+    box-shadow: 0 0 25px #d5a84d
+}
+
+.planet.active b {
+    opacity: 1
+}
+
+.p1 {
+    left: 43%;
+    top: 26%
+}
+
+.p2 {
+    right: 2%;
+    top: 50%
+}
+
+.p3 {
+    left: 5%;
+    bottom: 8%
+}
+
+.project-card {
+    border-left: 1px solid var(--gold);
+    padding: 15px 0 15px 35px
+}
+
+.project-card>p:first-child {
+    font: 9px DM Mono;
+    letter-spacing: .15em;
+    color: var(--gold)
+}
+
+.project-card h3 {
+    font-size: 50px;
+    font-weight: 300;
+    margin: 25px 0
+}
+
+.project-card>p {
+    color: #aaa;
+    line-height: 1.8
+}
+
+.project-card div,
+.dossier div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 28px 0
+}
+
+.project-card div span,
+.dossier div span {
+    font: 9px DM Mono;
+    border: 1px solid var(--line);
+    padding: 8px 10px
+}
+
+.project-card button {
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--ink);
+    padding: 10px 0;
+    font: 10px DM Mono
+}
+
+.trajectory-title {
+    max-width: 900px
+}
+
+.timeline {
+    margin: 80px 0 0 28%;
+    border-left: 1px solid var(--line)
+}
+
+.timeline article {
+    position: relative;
+    padding: 5px 0 45px 55px
+}
+
+.timeline article:before {
+    content: "";
+    position: absolute;
+    left: -4px;
+    top: 7px;
+    width: 7px;
+    height: 7px;
+    background: var(--gold);
+    border-radius: 50%
+}
+
+.timeline span {
+    font: 9px DM Mono;
+    color: var(--gold);
+    letter-spacing: .12em
+}
+
+.timeline h3 {
+    font-size: 25px;
+    font-weight: 400;
+    margin: 10px 0
+}
+
+.timeline p {
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.6
+}
+
+.cap-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 80px
+}
+
+.cap-grid article {
+    padding: 40px;
+    border: 1px solid var(--line);
+    min-height: 250px
+}
+
+.cap-grid b {
+    font: 10px DM Mono;
+    color: var(--gold)
+}
+
+.cap-grid h3 {
+    font-size: 28px;
+    font-weight: 400;
+    margin-top: 55px
+}
+
+.cap-grid p {
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 430px
+}
+
+.contact {
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center
+}
+
+.contact>a {
+    width: max-content;
+    font: clamp(13px, 2vw, 25px) DM Mono;
+    letter-spacing: .07em;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 10px
+}
+
+.contact>div {
+    position: absolute;
+    bottom: 35px;
+    left: 4vw;
+    right: 4vw;
+    border-top: 1px solid var(--line);
+    padding-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    font: 9px DM Mono;
+    color: var(--muted)
+}
+
+.contact>div p {
+    display: flex;
+    gap: 25px;
+    margin: 0
+}
+
+.contact>div button {
+    border: 0;
+    background: 0;
+    color: var(--muted);
+    font: 9px DM Mono
+}
+
+.dossier-backdrop {
+    position: fixed;
+    inset: 0;
+    background: #000c;
+    backdrop-filter: blur(18px);
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    padding: 20px
+}
+
+.dossier {
+    position: relative;
+    width: min(760px, 100%);
+    padding: 70px;
+    background: #0d0d0b;
+    border: 1px solid #6d552b;
+    box-shadow: 0 0 100px #000
+}
+
+.dossier .close {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    border: 0;
+    background: none;
+    font: 9px DM Mono
+}
+
+.dossier>p:first-of-type,
+.dossier h4 {
+    font: 10px DM Mono;
+    color: var(--gold);
+    letter-spacing: .15em
+}
+
+.dossier h2 {
+    font-size: 65px;
+    font-weight: 300;
+    margin: 30px 0 5px
+}
+
+.dossier>p {
+    color: #aaa;
+    line-height: 1.8
+}
+
+.dossier>a {
+    font: 10px DM Mono;
+    border-bottom: 1px solid var(--ink)
+}
+
+@media(max-width:820px) {
+    .nav {
+        height: 72px
+    }
+
+    .nav nav {
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        padding: 30px 4vw;
+        background: #080808;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start
+    }
+
+    .nav nav.open {
+        display: flex
+    }
+
+    .menu {
+        display: block
+    }
+
+    .hero {
+        padding-top: 125px
+    }
+
+    .hero h1 {
+        font-size: clamp(72px, 23vw, 150px);
+        line-height: .76
+    }
+
+    .hero-word.outline {
+        margin-left: 6%
+    }
+
+    .hero-bottom {
+        grid-template-columns: 1fr 1fr
+    }
+
+    .hero-bottom small {
+        display: none
+    }
+
+    .origin,
+    .orrery {
+        grid-template-columns: 1fr
+    }
+
+    .portrait-wrap {
+        max-width: 430px
+    }
+
+    .orrery-map {
+        width: 100%
+    }
+
+    .timeline {
+        margin-left: 0
+    }
+
+    .cap-grid {
+        grid-template-columns: 1fr
+    }
+
+    .contact>div {
+        gap: 16px;
+        flex-wrap: wrap
+    }
+
+    .dossier {
+        padding: 50px 28px
+    }
+
+    .dossier h2 {
+        font-size: 48px
+    }
+}
+
+@media(max-width:520px) {
+    .brand span {
+        display: none
+    }
+
+    .hero {
+        min-height: 820px
+    }
+
+    .hero h1 {
+        font-size: 22vw
+    }
+
+    .hero-bottom {
+        grid-template-columns: 1fr;
+        gap: 30px
+    }
+
+    .hero-bottom button {
+        justify-self: start
+    }
+
+    .section {
+        padding: 120px 6vw
+    }
+
+    .origin h2,
+    .work h2,
+    .trajectory h2,
+    .capabilities h2,
+    .contact h2 {
+        font-size: 15vw
+    }
+
+    .coordinates {
+        grid-template-columns: 1fr
+    }
+
+    .orrery {
+        margin-top: 50px
+    }
+
+    .orrery-map {
+        transform: scale(.94)
+    }
+
+    .project-card {
+        padding-left: 22px
+    }
+
+    .cap-grid article {
+        padding: 28px
+    }
+
+    .contact>div p {
+        order: 3;
+        width: 100%
+    }
+
+    .dossier h2 {
+        font-size: 38px
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+    *,
+    *:before,
+    *:after {
+        animation-duration: .01ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important
+    }
+}
+
+/* Interactive space systems */
+@media(pointer:fine) {
+
+    body.comet-cursor-enabled,
+    body.comet-cursor-enabled * {
+        cursor: none !important
+    }
+}
+
+.comet-cursor {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    pointer-events: none
+}
+
+.comet-cursor span {
+    position: absolute;
+    left: -7px;
+    top: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    will-change: transform
+}
+
+.comet-head {
+    background: var(--ink);
+    box-shadow: 0 0 9px var(--gold), 0 0 18px rgba(213, 168, 77, .7)
+}
+
+.comet-head:after {
+    content: "";
+    position: absolute;
+    inset: 4px -10px 4px 8px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    transform: rotate(35deg);
+    transform-origin: left
+}
+
+.comet-trail {
+    background: var(--gold);
+    opacity: .28
+}
+
+.shooting-star-field {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none
+}
+
+.shooting-star-field i {
+    position: absolute;
+    width: 150px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--ink));
+    filter: drop-shadow(0 0 5px var(--gold));
+    transform: rotate(-28deg) translateX(-100vw);
+    opacity: 0;
+    will-change: transform;
+    animation: shooting-star 1.25s ease-out forwards
+}
+
+@keyframes shooting-star {
+    8% {
+        opacity: 1
+    }
+
+    to {
+        opacity: 0;
+        transform: rotate(-28deg) translateX(85vw)
+    }
+}
+
+.parallax-space {
+    position: fixed;
+    inset: -20vh 0;
+    z-index: -2;
+    pointer-events: none;
+    overflow: hidden
+}
+
+.parallax-layer {
+    position: absolute;
+    inset: 0;
+    will-change: transform
+}
+
+.parallax-layer.far {
+    opacity: .28;
+    background: radial-gradient(circle at 12% 30%, rgba(120, 151, 232, .16), transparent 18%), radial-gradient(circle at 82% 68%, rgba(213, 168, 77, .1), transparent 24%)
+}
+
+.parallax-layer.mid {
+    background: radial-gradient(circle at 20% 22%, rgba(240, 236, 226, .7) 0 1px, transparent 1.5px), radial-gradient(circle at 70% 42%, rgba(213, 168, 77, .8) 0 1px, transparent 1.6px);
+    background-size: 240px 270px, 310px 350px;
+    opacity: .3
+}
+
+.parallax-layer.near {
+    background: radial-gradient(circle at 86% 18%, rgba(213, 168, 77, .22), transparent 3%), radial-gradient(circle at 7% 76%, rgba(120, 151, 232, .2), transparent 2.5%)
+}
+
+/* Orbit navigation + mission log */
+.orrery-map:before,
+.orrery-map:after,
+.project-orbit {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    transform: translate(-50%, -50%)
+}
+
+.orrery-map:before {
+    width: 68%;
+    height: 68%
+}
+
+.orrery-map:after {
+    width: 94%;
+    height: 94%
+}
+
+.project-orbit {
+    animation: project-orbit 22s linear infinite;
+    pointer-events: none
+}
+
+.orbit-1 {
+    width: 43%;
+    height: 43%;
+    animation-duration: 16s
+}
+
+.orbit-2 {
+    width: 68%;
+    height: 68%;
+    animation-duration: 23s;
+    animation-delay: -7s
+}
+
+.orbit-3 {
+    width: 94%;
+    height: 94%;
+    animation-duration: 31s;
+    animation-delay: -17s
+}
+
+.orrery-map:hover .project-orbit,
+.project-orbit:focus-within {
+    animation-play-state: paused
+}
+
+.project-orbit .planet {
+    pointer-events: auto;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -50%);
+    animation: planet-counter-orbit 22s linear infinite
+}
+
+.orbit-1 .planet {
+    animation-duration: 16s
+}
+
+.orbit-2 .planet {
+    animation-duration: 23s;
+    animation-delay: -7s
+}
+
+.orbit-3 .planet {
+    animation-duration: 31s;
+    animation-delay: -17s
+}
+
+.project-orbit:focus-within .planet,
+.orrery-map:hover .planet {
+    animation-play-state: paused
+}
+
+@keyframes project-orbit {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg)
+    }
+}
+
+@keyframes planet-counter-orbit {
+    to {
+        transform: translate(-50%, -50%) rotate(-360deg)
+    }
+}
+
+.project-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px dashed rgba(213, 168, 77, .55);
+    padding: 38px;
+    background: linear-gradient(145deg, rgba(18, 16, 12, .88), rgba(6, 6, 6, .7));
+    box-shadow: inset 0 0 40px rgba(213, 168, 77, .035);
+    transition: transform .35s, box-shadow .35s
+}
+
+.project-card:hover {
+    transform: rotate(-.35deg) translateY(-3px);
+    box-shadow: 0 20px 70px rgba(0, 0, 0, .35), inset 0 0 45px rgba(213, 168, 77, .06)
+}
+
+.project-card>p:first-of-type {
+    margin-top: 0
+}
+
+.mission-stamp {
+    position: absolute;
+    right: -17px;
+    top: 22px;
+    padding: 7px 22px;
+    border: 2px solid rgba(213, 168, 77, .22);
+    color: rgba(213, 168, 77, .28);
+    font: 700 15px DM Mono;
+    letter-spacing: .16em;
+    transform: rotate(10deg)
+}
+
+.mission-status {
+    display: flex;
+    gap: 8px;
+    margin: 20px 0 !important
+}
+
+.mission-status span {
+    border: 0 !important;
+    background: rgba(213, 168, 77, .1);
+    color: var(--gold)
+}
+
+.mission-status span:first-child:before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    margin-right: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    vertical-align: middle
+}
+
+.project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 28px 0
+}
+
+.project-card h3 {
+    margin-top: 12px
+}
+
+/* Mission control contact */
+.contact {
+    min-height: 100vh;
+    padding-bottom: 120px
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr minmax(410px, .75fr);
+    gap: 7vw;
+    align-items: center
+}
+
+.contact-grid h2 {
+    font-size: clamp(48px, 6.2vw, 100px)
+}
+
+.terminal {
+    border: 1px solid rgba(213, 168, 77, .42);
+    background: rgba(4, 7, 5, .9);
+    box-shadow: 0 30px 100px #000;
+    padding: 0 26px 28px;
+    font-family: DM Mono, monospace
+}
+
+.terminal-bar {
+    height: 42px;
+    margin: 0 -26px 24px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border-bottom: 1px solid var(--line);
+    background: #0b0c0b
+}
+
+.terminal-bar>span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--muted)
+}
+
+.terminal-bar>span:nth-child(2) {
+    background: var(--gold)
+}
+
+.terminal-bar b {
+    margin-left: auto;
+    font-size: 8px;
+    letter-spacing: .16em;
+    color: var(--muted)
+}
+
+.terminal-prompt {
+    min-height: 34px;
+    color: #b8d7a9;
+    font-size: 10px;
+    letter-spacing: .08em
+}
+
+.terminal-prompt i {
+    display: inline-block;
+    width: 7px;
+    height: 13px;
+    margin-left: 2px;
+    background: var(--gold);
+    vertical-align: middle;
+    animation: terminal-blink .8s steps(1) infinite
+}
+
+@keyframes terminal-blink {
+    50% {
+        opacity: 0
+    }
+}
+
+.terminal form {
+    display: grid;
+    gap: 18px
+}
+
+.terminal label {
+    display: grid;
+    gap: 7px;
+    color: var(--gold);
+    font-size: 9px;
+    letter-spacing: .13em
+}
+
+.terminal input,
+.terminal textarea {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--ink);
+    padding: 8px 2px 11px;
+    font: 12px DM Mono;
+    resize: vertical
+}
+
+.terminal input:focus,
+.terminal textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 1px var(--gold)
+}
+
+.terminal button {
+    justify-self: start;
+    border: 1px solid var(--gold);
+    background: var(--gold);
+    color: #090704;
+    padding: 12px 16px;
+    font: 9px DM Mono;
+    letter-spacing: .12em
+}
+
+.footer-line {
+    position: absolute;
+    bottom: 35px;
+    left: 4vw;
+    right: 4vw;
+    border-top: 1px solid var(--line);
+    padding-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    font: 9px DM Mono;
+    color: var(--muted)
+}
+
+.footer-line p {
+    display: flex;
+    gap: 25px;
+    margin: 0
+}
+
+.footer-line button {
+    border: 0;
+    background: 0;
+    color: var(--muted);
+    font: 9px DM Mono
+}
+
+@media(max-width:820px) {
+    .parallax-layer.near {
+        display: none
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr
+    }
+
+    .terminal {
+        max-width: 620px
+    }
+
+    .project-card {
+        padding: 32px
+    }
+}
+
+@media(max-width:520px) {
+    .project-orbit .planet b {
+        display: none
+    }
+
+    .project-card {
+        padding: 28px 22px
+    }
+
+    .contact-grid h2 {
+        font-size: 15vw
+    }
+
+    .terminal {
+        padding: 0 18px 22px
+    }
+
+    .terminal-bar {
+        margin-left: -18px;
+        margin-right: -18px
+    }
+
+    .footer-line {
+        gap: 16px;
+        flex-wrap: wrap
+    }
+
+    .footer-line p {
+        order: 3;
+        width: 100%
+    }
+}
+
+@media(pointer:coarse) {
+    .comet-cursor {
+        display: none
+    }
+
+    .parallax-layer.near {
+        display: none
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+    .comet-cursor,
+    .shooting-star-field {
+        display: none
+    }
+
+    .parallax-layer {
+        transform: none !important
+    }
+
+    .project-orbit,
+    .project-orbit .planet {
+        animation: none !important
+    }
+
+    .terminal-prompt i {
+        animation: none
+    }
+}
+
+.portrait-wrap img {
+    height: auto
+}
+
+.orbiting-planet {
+    z-index: 3;
+    left: 50%;
+    top: 50%;
+    will-change: left, top;
+    animation: planet-track-1 16s linear infinite
+}
+
+.moving-2 {
+    animation-name: planet-track-2;
+    animation-duration: 23s;
+    animation-delay: -7s
+}
+
+.moving-3 {
+    animation-name: planet-track-3;
+    animation-duration: 31s;
+    animation-delay: -17s
+}
+
+.orrery-map:hover .orbiting-planet,
+.orbiting-planet:focus {
+    animation-play-state: paused
+}
+
+@keyframes planet-track-1 {
+
+    0%,
+    100% {
+        left: 50%;
+        top: 28.5%
+    }
+
+    25% {
+        left: 71.5%;
+        top: 50%
+    }
+
+    50% {
+        left: 50%;
+        top: 71.5%
+    }
+
+    75% {
+        left: 28.5%;
+        top: 50%
+    }
+}
+
+@keyframes planet-track-2 {
+
+    0%,
+    100% {
+        left: 50%;
+        top: 16%
+    }
+
+    25% {
+        left: 84%;
+        top: 50%
+    }
+
+    50% {
+        left: 50%;
+        top: 84%
+    }
+
+    75% {
+        left: 16%;
+        top: 50%
+    }
+}
+
+@keyframes planet-track-3 {
+
+    0%,
+    100% {
+        left: 50%;
+        top: 3%
+    }
+
+    25% {
+        left: 97%;
+        top: 50%
+    }
+
+    50% {
+        left: 50%;
+        top: 97%
+    }
+
+    75% {
+        left: 3%;
+        top: 50%
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    .orbiting-planet {
+        animation: none
+    }
+
+    .moving-1 {
+        left: 50%;
+        top: 28.5%
+    }
+
+    .moving-2 {
+        left: 84%;
+        top: 50%
+    }
+
+    .moving-3 {
+        left: 3%;
+        top: 50%
+    }
+}
+
+.orrery-map:before,
+.orrery-map:after {
+    display: none
+}
+
+.contact>.contact-grid {
+    position: static;
+    inset: auto;
+    border-top: 0;
+    padding-top: 0;
+    color: inherit;
+    width: 100%
+}
+
+.contact .terminal button {
+    border: 1px solid var(--gold);
+    background: var(--gold);
+    color: #090704;
+    padding: 12px 16px;
+    font: 9px DM Mono;
+    letter-spacing: .12em
+}
+
+.contact>.contact-grid {
+    display: grid
+}
