@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import CometCursor from "./components/CometCursor";
+
 
 export const metadata: Metadata = {
   title: "Somyadeep Tarat — Student Developer & Aspiring Entrepreneur",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body><CometCursor />{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
