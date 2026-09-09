@@ -23,7 +23,8 @@ The production output is `out/`. `next start` does not serve static exports; use
 
 - `app/page.tsx`: visitor flow, project diagrams, navigation, and native project dialog.
 - `app/globals.css`: shared visual tokens and responsive layouts.
-- `app/components/CosmicCanvas.tsx`: procedural 3D planet, rings, drag controls, visibility-aware rendering, reduced-motion support, and WebGL fallback.
+- `app/components/MotionEffects.tsx`: scroll reveals, pointer-driven card depth, and a subtle scroll-following light.
+- `app/components/CosmicCanvas.tsx`: switchable 3D planet, connected network, and animated orbital rings with drag controls, visibility-aware rendering, reduced-motion support, and WebGL fallback.
 - `app/components/TerminalContactForm.tsx`: validated email draft composer.
 - `app/data/projects.ts`: editable project content and technology stacks.
 - `public/assets/`: existing portrait and monogram.
