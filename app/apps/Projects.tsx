@@ -1,122 +1,21 @@
-"use client";
-import ProjectLinks from "../components/ProjectLinks";
-
-import { useState } from "react";
-import { projects, copy } from "../data/profile";
-import type { AppProps } from "../desktop/registry";
-import { Icon } from "../desktop/icons";
-import ProjectArtwork from "../components/ProjectArtwork";
+'use client';
+import { useState, useEffect } from 'react';
+import { projects, copy } from '../data/profile';
+import { ui } from '../data/interface';
+import type { AppProps } from '../desktop/registry';
+import ProjectArtwork from '../components/ProjectArtwork';
+import ProjectLinks from '../components/ProjectLinks';
+import Overlay from '../desktop/Overlay';
 export default function Projects({ selection, onNavigate }: AppProps) {
-  const [selected, setSelected] = useState<string | undefined>(selection);
-  const [filter, setFilter] = useState("All projects");
-  const project = projects.find((p) => p.id === selected);
-  return (
-    <div className="split-app projects-app">
-      <aside className="app-sidebar">
-        <span className="section-kicker">FAVORITES</span>
-        <button
-          className={!project && filter === "All projects" ? "selected" : ""}
-          onClick={() => {
-            setSelected(undefined);
-            setFilter("All projects");
-          }}
-        >
-          <Icon name="grid" size={17} />
-          All projects <small className="count">03</small>
-        </button>
-        <span className="section-kicker sidebar-heading">COLLECTIONS</span>
-        {projects.map((p) => (
-          <button
-            key={p.id}
-            className={filter === p.category ? "selected" : ""}
-            onClick={() => {
-              setSelected(undefined);
-              setFilter(p.category);
-            }}
-          >
-            <span className={`category-dot ${p.id}`} />
-            {p.category}
-          </button>
-        ))}
-        <div className="sidebar-note">
-          Built with purpose.
-          <br />
-          Explored with curiosity.
-        </div>
-      </aside>
-      <div className="projects-content">
-        {project ? (
-          <>
-            <div className="project-toolbar">
-              <button onClick={() => setSelected(undefined)}>
-                ← All projects
-              </button>
-              <span>{project.number} / 03</span>
-            </div>
-            <ProjectArtwork id={project.id} />
-            <div className="project-detail">
-              <span className="eyebrow">{project.category}</span>
-              <h2>{project.name}</h2>
-              <h3>{project.subtitle}</h3>
-              <p>{project.description}</p>
-              <div className="tags">
-                {project.stack.map((t) => (
-                  <span key={t}>{t}</span>
-                ))}
-              </div>
-              <h4>{copy.projects.details}</h4>
-              <ul className="highlights">
-                {project.highlights.map((h) => (
-                  <li key={h}>{h}</li>
-                ))}
-              </ul>
-              <ProjectLinks project={project} />
-            </div>
-          </>
-        ) : (
-          <>
-            <header className="app-heading">
-              <span className="eyebrow">A FEW THINGS I’VE BUILT</span>
-              <h2>{copy.projects.title}</h2>
-              <p>{copy.projects.intro}</p>
-            </header>
-            <div className="project-gallery">
-              {projects
-                .filter(
-                  (p) => filter === "All projects" || p.category === filter,
-                )
-                .map((p) => (
-                  <button
-                    className="project-tile"
-                    key={p.id}
-                    onClick={() => onNavigate("projects", p.id)}
-                  >
-                    <ProjectArtwork id={p.id} />
-                    <div className="tile-copy">
-                      <span>
-                        {p.number} <Icon name="arrow" size={12} />
-                      </span>
-                      <h3>{p.name}</h3>
-                      <p>{p.subtitle}</p>
-                      <small>{p.stack.slice(0, 3).join(" · ")}</small>
-                    </div>
-                  </button>
-                ))}
-            </div>
-            <footer className="gallery-footer">
-              <span>
-                {
-                  projects.filter(
-                    (p) => filter === "All projects" || p.category === filter,
-                  ).length
-                }{" "}
-                items
-              </span>
-              <span>Original concept illustrations · Screenshots TODO</span>
-            </footer>
-          </>
-        )}
-      </div>
-    </div>
-  );
+ const [filter, setFilter] = useState('');
+ const [query, setQuery] = useState('');
+ const [view, setView] = useState<'grid'|'list'|'columns'>('grid');
+ const [quick, setQuick] = useState<string | null>(null);
+ const project = projects.find(p => p.id === selection);
+ const preview = projects.find(p => p.id === quick);
+ const tags = [...new Set(projects.flatMap(p => p.stack))];
+ const matches = projects.filter(p => (!filter || p.stack.includes(filter)) && `${p.name} ${p.subtitle} ${p.stack.join(' ')}`.toLowerCase().includes(query.toLowerCase()));
+ useEffect(() => { const change = (e: Event) => setView((e as CustomEvent).detail); window.addEventListener('portfolio-project-view', change); return () => window.removeEventListener('portfolio-project-view', change); }, []);
+ const detail = (p: typeof projects[number]) => <><ProjectArtwork id={p.id}/><div className="project-detail"><span className="eyebrow">{p.category}</span><h2>{p.name}</h2><h3>{p.subtitle}</h3><p>{p.description}</p><div className="tags">{p.stack.map(t => <span key={t}>{t}</span>)}</div><p className="todo-note">{ui.projects.role}</p><h4>{copy.projects.details}</h4><ul className="highlights">{p.highlights.map(h => <li key={h}>{h}</li>)}</ul><ProjectLinks project={p}/></div></>;
+ return <div className="split-app projects-app"><aside className="app-sidebar"><button className={!filter ? 'selected' : ''} onClick={() => { setFilter(''); if(project) onNavigate('projects'); }}>{ui.projects.all}<small className="count">{projects.length}</small></button><span className="section-kicker sidebar-heading">{ui.projects.tags}</span>{tags.map(t => <button key={t} className={filter === t ? 'selected' : ''} onClick={() => { setFilter(t); if(project) onNavigate('projects'); }}>{t}</button>)}</aside><div className="projects-content">{project ? <><div className="project-toolbar"><button onClick={() => onNavigate('projects')}>← {ui.projects.all}</button><button onClick={() => setQuick(project.id)}>{ui.projects.quick}</button></div>{detail(project)}</> : <><header className="app-heading"><span className="eyebrow">{copy.projects.title}</span><h2>{copy.projects.title}</h2><p>{copy.projects.intro}</p></header><div className="finder-controls"><input aria-label={ui.projects.search} placeholder={ui.projects.search} value={query} onChange={e => setQuery(e.target.value)}/><div className="segmented">{ui.projects.views.map(v => <button key={v} aria-pressed={view === v} onClick={() => setView(v)}>{v}</button>)}</div></div><div className={`project-gallery finder-${view}`}>{matches.map(p => <button className="project-tile" key={p.id} onClick={() => onNavigate('projects', p.id)} onKeyDown={e => { if(e.key === ' ') { e.preventDefault(); setQuick(p.id); } }}><ProjectArtwork id={p.id}/><div className="tile-copy"><span>{p.number} ↗</span><h3>{p.name}</h3><p>{p.subtitle}</p><small>{p.stack.slice(0,3).join(' · ')}</small>{view === 'columns' && <p>{p.description}</p>}</div></button>)}</div>{!matches.length && <p className="empty-state">{ui.projects.empty}</p>}<footer className="gallery-footer"><span>{matches.length} / {projects.length}</span><span>{ui.projects.assets}</span></footer></> }</div>{preview && <Overlay title={`${ui.projects.quick} · ${preview.name}`} onClose={() => setQuick(null)}>{detail(preview)}</Overlay>}</div>;
 }

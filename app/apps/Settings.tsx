@@ -1,5 +1,5 @@
 "use client";
-import { usePreferences } from "../desktop/preferences";
+import { usePreferences, accents, initialPreferences } from "../desktop/preferences";
 import type { AppProps } from "../desktop/registry";
 import { ui } from "../data/interface";
 import { Icon } from "../desktop/icons";
@@ -37,7 +37,7 @@ export default function Settings({ selection }: AppProps) {
           <p>Original gradients. A different atmosphere.</p>
         </div>
         <div className="wallpaper-options">
-          {(["dawn", "dusk", "sage"] as const).map((wallpaper) => (
+          {(["dawn", "dusk", "sage", "dynamic"] as const).map((wallpaper) => (
             <button
               key={wallpaper}
               aria-pressed={preferences.wallpaper === wallpaper}
@@ -65,6 +65,10 @@ export default function Settings({ selection }: AppProps) {
         </button>
       </section>
       <section><button onClick={() => { try { localStorage.removeItem("portfolio-hints"); } catch {} window.dispatchEvent(new Event("portfolio-reset-hints")); }}>{ui.welcome.reset}</button></section>
+      <section><div className="setting-label"><h3>{ui.settings.accent}</h3></div><div className="accent-options">{Object.entries(accents).map(([key,value]) => <button key={key} aria-label={key} aria-pressed={preferences.accent === key} style={{background:value.light}} onClick={() => update({accent:key})}/>)}</div></section>
+      <section><h3>{ui.settings.dock}</h3><div className="segmented">{[40,52,64].map(size => <button key={size} aria-pressed={preferences.dockSize === size} onClick={() => update({dockSize:size})}>{size}</button>)}</div></section>
+      {([['magnification',ui.settings.magnify],['sound',ui.settings.sound],['transparency',ui.settings.transparency],['widgets',ui.settings.widgets]] as const).map(([key,label]) => <section key={key}><h3>{label}</h3><button className="switch" role="switch" aria-label={label} aria-checked={key === 'transparency' ? !preferences[key] : preferences[key]} onClick={() => update({[key]:!preferences[key]})}><span/></button></section>)}
+      <section><div className="setting-label"><h3>{ui.settings.reset}</h3><p>{ui.settings.resetNote}</p></div><button className="text-button" onClick={() => { update(initialPreferences); try { localStorage.removeItem('portfolio-windows'); localStorage.removeItem('portfolio-widget-positions'); localStorage.removeItem('portfolio-hints'); } catch {} window.dispatchEvent(new Event('portfolio-reset')); }}>{ui.settings.reset}</button></section>
       <details
         className="keyboard-guide"
         open={selection === "keyboard" || undefined}

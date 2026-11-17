@@ -1,17 +1,18 @@
 "use client";
-import { useState } from "react";
+import { ui } from "../data/interface";
 import { experience, leadership, copy } from "../data/profile";
 import type { AppProps } from "../desktop/registry";
 export default function Experience({ selection, onNavigate }: AppProps) {
-  const [selected] = useState(selection || experience[0].id);
+  const selected = selection || "highlights";
   const item = experience.find((e) => e.id === selected) || experience[0];
   return (
     <div className="split-app">
-      <aside className="app-sidebar">
+      <aside className="app-sidebar" onKeyDown={e => { if(e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); const ids = ["highlights", ...experience.map(e => e.id)]; onNavigate("experience", ids[(ids.indexOf(selected) + (e.key === "ArrowDown" ? 1 : -1) + ids.length) % ids.length]); } }}>
+        <span className="section-kicker">{ui.notes.pinned}</span><button className={selected === "highlights" ? "selected" : ""} onClick={() => onNavigate("experience", "highlights")}>{ui.notes.highlights}</button>
         <span className="section-kicker">EXPERIENCE</span>
         {experience.map((e) => (
           <button
-            className={item.id === e.id ? "selected" : ""}
+            className={selected === e.id ? "selected" : ""}
             key={e.id}
             onClick={() => onNavigate("experience", e.id)}
           >
@@ -30,7 +31,7 @@ export default function Experience({ selection, onNavigate }: AppProps) {
           Always learning.
         </div>
       </aside>
-      <article className="experience-detail">
+      {selected === "highlights" ? <article className="experience-detail"><span className="eyebrow">{ui.notes.highlights}</span><h2>{ui.notes.title}</h2>{experience.map(e => <section className="highlight-note" key={e.id}><button onClick={() => onNavigate("experience", e.id)}><h3>{e.company} ↗</h3></button><p>{e.role} · {e.dates}</p><ul className="highlights">{e.highlights.map(h => <li key={h}>{h}</li>)}</ul></section>)}</article> : <article className="experience-detail">
         <span className="eyebrow">{item.category}</span>
         <div className={`company-avatar large ${item.id}`}>{item.initials}</div>
         <h2>{item.company}</h2>
@@ -63,7 +64,7 @@ export default function Experience({ selection, onNavigate }: AppProps) {
             </div>
           ))}
         </section>
-      </article>
+      </article>}
     </div>
   );
 }

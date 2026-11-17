@@ -10,8 +10,14 @@ export type IconName =
   | "moon"
   | "mail"
   | "arrow"
-  | "grid";
+  | "grid" | "terminal" | "activity" | "calendar" | "photos" | "globe" | "trash";
 const paths: Record<IconName, string> = {
+ terminal: "M3 4h18v16H3zM6 8l4 4-4 4M13 16h5",
+ activity: "M3 12h4l3-8 4 16 3-8h4",
+ calendar: "M3 5h18v16H3zM3 10h18M7 3v4M17 3v4M7 14h2M13 14h2M7 18h2",
+ photos: "M3 3h18v18H3zM3 17l6-7 4 5 3-3 5 6M15 7h1",
+ globe: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20ZM2 12h20M12 2c-6 6-6 14 0 20M12 2c6 6 6 14 0 20",
+ trash: "M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7",
   about: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21v-2a8 8 0 0 1 16 0v2",
   experience: "M3 7h18v14H3zM8 7V3h8v4M3 12c6 4 12 4 18 0M10 13h4",
   projects: "M3 6h7l2 3h9v12H3zM3 6V3h7l2 3h8v3",
@@ -62,7 +68,7 @@ export function AppIcon({
               resume: "#c77b7c",
               settings: "#8a94a6",
             } as Record<string, string>
-          )[name],
+          )[name] || "#648a97",
         } as CSSProperties
       }
     >

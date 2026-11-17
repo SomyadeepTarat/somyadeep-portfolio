@@ -1,6 +1,13 @@
 import { lazy } from "react";
 import type { IconName } from "./icons";
 export const apps = [
+ { id: "mail", name: "Contact", icon: "mail", component: lazy(() => import("../apps/Mail")), defaultSize: { width: 660, height: 620 } },
+ { id: "terminal", name: "Terminal", icon: "terminal", component: lazy(() => import("../apps/Terminal")), defaultSize: { width: 720, height: 480 } },
+ { id: "skills", name: "Skills", icon: "activity", component: lazy(() => import("../apps/Skills")), defaultSize: { width: 760, height: 580 } },
+ { id: "timeline", name: "Timeline", icon: "calendar", component: lazy(() => import("../apps/Timeline")), defaultSize: { width: 680, height: 560 } },
+ { id: "photos", name: "Photos", icon: "photos", component: lazy(() => import("../apps/Photos")), defaultSize: { width: 760, height: 540 } },
+ { id: "safari", name: "Live demos", icon: "globe", component: lazy(() => import("../apps/Safari")), defaultSize: { width: 860, height: 600 } },
+ { id: "trash", name: "Trash", icon: "trash", component: lazy(() => import("../apps/Trash")), defaultSize: { width: 540, height: 380 } },
  { id: "shortcuts", name: "Keyboard Shortcuts", icon: "grid", component: lazy(() => import("../apps/Shortcuts")), defaultSize: { width: 600, height: 520 } },
   { id: "welcome", name: "Welcome", icon: "sun", component: lazy(() => import("../apps/Welcome")), defaultSize: { width: 680, height: 480 } },
   {

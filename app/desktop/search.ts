@@ -5,11 +5,11 @@ export const searchIndex: SearchResult[] = [
  ...apps.map(a => ({ id: a.id, label: a.name, category: 'Applications' })),
  ...projects.map(p => ({ id: 'projects' as const, label: p.name, category: 'Projects', selection: p.id, terms: `${p.subtitle} ${p.stack.join(' ')}` })),
  ...experience.map((e, i) => ({ id: 'experience' as const, label: `${e.company} · ${e.role}`, category: 'Experience', selection: e.id, terms: `${e.stack.join(' ')} ${i === 0 ? 'Latest role' : ''}` })),
- ...skills.flatMap(g => g.items.map(s => ({ id: 'about' as const, label: s, category: 'Skills', selection: s, terms: g.category }))),
+ ...skills.flatMap(g => g.items.map(s => ({ id: 'skills' as const, label: s, category: 'Skills', selection: s, terms: g.category }))),
  { id: 'about', label: profile.education.institution, category: 'Education', selection: 'education', terms: profile.education.degree },
  { id: 'resume', label: 'Download resume', category: 'Quick actions', action: 'download' },
  { id: 'settings', label: 'Toggle dark mode', category: 'Quick actions', action: 'theme' },
- { id: 'welcome', label: 'Contact', category: 'Quick actions', selection: 'contact' },
+ { id: 'mail', label: 'Contact', category: 'Quick actions' },
 ];
 function score(query: string, text: string) {
  const q = query.toLowerCase().trim(), t = text.toLowerCase();
