@@ -76,7 +76,7 @@ export default function StandardPortfolio() {
         <p className="section-description">{copy.experience.intro}</p>
         <div className="standard-experience">
           {experience.map((e) => (
-            <article key={e.id}>
+            <article key={e.id} id={`experience-${e.id}`}>
               <div className="experience-top">
                 <span className={`company-avatar large ${e.id}`}>
                   {e.initials}
@@ -116,7 +116,7 @@ export default function StandardPortfolio() {
         <p className="section-description">{copy.projects.intro}</p>
         <div className="standard-projects">
           {projects.map((p) => (
-            <article key={p.id}>
+            <article key={p.id} id={`projects-${p.id}`}>
               <ProjectArtwork id={p.id} />
               <div className="standard-project-copy">
                 <span className="section-kicker">

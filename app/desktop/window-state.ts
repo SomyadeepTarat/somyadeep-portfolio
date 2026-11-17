@@ -19,7 +19,13 @@ export type Action =
   | { type: "bounds"; id: AppId; bounds: Bounds }
   | { type: "restore"; windows: WindowState[]; width: number; height: number }
   | { type: "closeAll" | "minimizeAll" }
-  | { type: "snap"; id: AppId; side: "left" | "right" | "full"; width: number; height: number }
+  | {
+      type: "snap";
+      id: AppId;
+      side: "left" | "right" | "full";
+      width: number;
+      height: number;
+    }
   | { type: "viewport"; width: number; height: number };
 export function clampBounds(b: Bounds, width: number, height: number): Bounds {
   const w = Math.min(
@@ -42,20 +48,59 @@ export function windowReducer(state: State, action: Action): State {
     "id" in action ? state.windows.find((w) => w.id === action.id) : undefined;
   switch (action.type) {
     case "restore":
-      return { windows: action.windows.filter((w, i, all) => apps.some(a => a.id === w.id) && all.findIndex(x => x.id === w.id) === i && [w.x,w.y,w.width,w.height].every(Number.isFinite)).map(w => ({ ...w, ...clampBounds(w, action.width, action.height) })) };
-    case "closeAll": return { windows: [] };
-    case "minimizeAll": return { windows: state.windows.map(w => ({ ...w, minimized: true })) };
-    case "snap": return { windows: state.windows.map(w => w.id === action.id ? { ...w, maximized: action.side === 'full', ...clampBounds({ x: action.side === 'right' ? action.width / 2 + 4 : 12, y: 44, width: action.width / 2 - 16, height: action.height - 140 }, action.width, action.height) } : w) };
+      return {
+        windows: action.windows
+          .filter(
+            (w, i, all) =>
+              w !== null &&
+              typeof w === "object" &&
+              apps.some((a) => a.id === w.id) &&
+              all.findIndex((x) => x?.id === w.id) === i &&
+              [w.x, w.y, w.width, w.height].every(Number.isFinite),
+          )
+          .map((w) => ({
+            ...w,
+            ...clampBounds(w, action.width, action.height),
+          })),
+      };
+    case "closeAll":
+      return { windows: [] };
+    case "minimizeAll":
+      return { windows: state.windows.map((w) => ({ ...w, minimized: true })) };
+    case "snap":
+      return {
+        windows: state.windows.map((w) =>
+          w.id === action.id
+            ? {
+                ...w,
+                maximized: action.side === "full",
+                ...(action.side === "full"
+                  ? {}
+                  : clampBounds(
+                      {
+                        x: action.side === "right" ? action.width / 2 + 4 : 12,
+                        y: 44,
+                        width: action.width / 2 - 16,
+                        height: action.height - 140,
+                      },
+                      action.width,
+                      action.height,
+                    )),
+              }
+            : w,
+        ),
+      };
     case "open": {
       const app = apps.find((a) => a.id === action.id)!;
       const w = existing
         ? {
             ...existing,
             minimized: false,
-            selection: action.selection,
-            selectionVersion: action.selection
-              ? (existing.selectionVersion || 0) + 1
-              : existing.selectionVersion,
+            selection: action.selection ?? existing.selection,
+            selectionVersion:
+              action.selection !== undefined
+                ? (existing.selectionVersion || 0) + 1
+                : existing.selectionVersion,
           }
         : {
             id: action.id,

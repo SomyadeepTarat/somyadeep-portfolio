@@ -54,7 +54,10 @@ export default function About({ onNavigate, selection }: AppProps) {
             View resume →
           </button>
         </div>
-        <details className="skills-disclosure" open={!!selection && selection !== "education"}>
+        <details
+          className="skills-disclosure"
+          open={!!selection && selection !== "education"}
+        >
           <summary>
             Skills & certification <span>+</span>
           </summary>

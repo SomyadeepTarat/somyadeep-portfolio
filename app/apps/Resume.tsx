@@ -12,9 +12,22 @@ export default function Resume() {
       <div className="resume-toolbar">
         <span>Somyadeep Tarat · 1 page</span>
         <div>
-          <button onClick={() => setWeb(!web)}>{web ? "PDF preview" : "View as web page"}</button>
-          <button onClick={() => window.open(profile.resume, "_blank", "noopener,noreferrer")}>Print / open PDF</button>
-          <button onClick={() => { setWeb(false); setNative(!native); }}>
+          <button onClick={() => setWeb(!web)}>
+            {web ? "PDF preview" : "View as web page"}
+          </button>
+          <button
+            onClick={() =>
+              window.open(profile.resume, "_blank", "noopener,noreferrer")
+            }
+          >
+            Print / open PDF
+          </button>
+          <button
+            onClick={() => {
+              setWeb(false);
+              setNative(!native);
+            }}
+          >
             {native ? "Page preview" : "Native PDF"}
           </button>
           <a
@@ -31,7 +44,49 @@ export default function Resume() {
           </a>
         </div>
       </div>
-      {web ? <article className="web-resume utility-app"><h1>{profile.name}</h1><p>{profile.role} · {profile.email}</p><h2>{profile.education.institution}</h2><p>{profile.education.degree} · {profile.education.dates} · CGPA {profile.education.cgpa}</p>{experience.map(e => <section key={e.id}><h2>{e.company}</h2><p>{e.role} · {e.dates}</p><ul>{e.highlights.map(h => <li key={h}>{h}</li>)}</ul></section>)}{projects.map(p => <section key={p.id}><h2>{p.name}</h2><p>{p.subtitle}</p><ul>{p.highlights.map(h => <li key={h}>{h}</li>)}</ul></section>)}{skills.map(s => <section key={s.category}><h3>{s.category}</h3><p>{s.items.join(" · ")}</p></section>)}</article> : native ? (
+      {web ? (
+        <article className="web-resume utility-app">
+          <h1>{profile.name}</h1>
+          <p>
+            {profile.role} · {profile.email}
+          </p>
+          <h2>{profile.education.institution}</h2>
+          <p>
+            {profile.education.degree} · {profile.education.dates} · CGPA{" "}
+            {profile.education.cgpa}
+          </p>
+          {experience.map((e) => (
+            <section key={e.id}>
+              <h2>{e.company}</h2>
+              <p>
+                {e.role} · {e.dates}
+              </p>
+              <ul>
+                {e.highlights.map((h) => (
+                  <li key={h}>{h}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+          {projects.map((p) => (
+            <section key={p.id}>
+              <h2>{p.name}</h2>
+              <p>{p.subtitle}</p>
+              <ul>
+                {p.highlights.map((h) => (
+                  <li key={h}>{h}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+          {skills.map((s) => (
+            <section key={s.category}>
+              <h3>{s.category}</h3>
+              <p>{s.items.join(" · ")}</p>
+            </section>
+          ))}
+        </article>
+      ) : native ? (
         <object
           className="pdf-viewer"
           data={profile.resume}

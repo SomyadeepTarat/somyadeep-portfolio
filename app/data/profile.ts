@@ -138,6 +138,7 @@ export type Project = {
   github: string | null;
   live: string | null;
   screenshot: string | null;
+  screenshots?: { src: string; alt: string }[];
 };
 export const projects: Project[] = [
   {

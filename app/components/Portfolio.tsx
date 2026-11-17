@@ -14,15 +14,57 @@ function Layout({ children }: { children: ReactNode }) {
     const media = matchMedia("(min-width: 768px)");
     const sync = () => setWide(media.matches);
     sync();
-    const frame = requestAnimationFrame(() => { try { setStandard(localStorage.getItem("portfolio-simple") === "true"); setNotice(sessionStorage.getItem("portfolio-mobile-notice") !== "dismissed"); } catch {} });
+    const frame = requestAnimationFrame(() => {
+      try {
+        setStandard(localStorage.getItem("portfolio-simple") === "true");
+        setNotice(
+          sessionStorage.getItem("portfolio-mobile-notice") !== "dismissed",
+        );
+      } catch {}
+    });
     media.addEventListener("change", sync);
-    return () => { cancelAnimationFrame(frame); media.removeEventListener("change", sync); };
+    return () => {
+      cancelAnimationFrame(frame);
+      media.removeEventListener("change", sync);
+    };
   }, []);
-  const switchView = (value: boolean) => { setStandard(value); try { localStorage.setItem("portfolio-simple", String(value)); } catch {} };
+  useEffect(() => {
+    if (wide !== false && !standard) return;
+    const follow = () => {
+      if (!location.hash.startsWith("#/")) return;
+      const parts = location.hash.replace(/^#\//, "").split("/");
+      let item = "";
+      try {
+        item = decodeURIComponent(parts[1] || "");
+      } catch {
+        return;
+      }
+      const target = document.getElementById(
+        parts.length > 1 ? `${parts[0]}-${item}` : parts[0],
+      );
+      target?.scrollIntoView();
+    };
+    const frame = requestAnimationFrame(follow);
+    window.addEventListener("hashchange", follow);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", follow);
+    };
+  }, [wide, standard]);
+  const switchView = (value: boolean) => {
+    setStandard(value);
+    try {
+      localStorage.setItem("portfolio-simple", String(value));
+    } catch {}
+  };
   const desktopVisible = wide === true && !standard;
   return (
     <>
-      {wide === true && <div hidden={!desktopVisible}><Desktop onStandard={() => switchView(true)} /></div>}
+      {wide === true && (
+        <div hidden={!desktopVisible}>
+          <Desktop onStandard={() => switchView(true)} />
+        </div>
+      )}
       {wide === null && (
         <div className="desktop-loading" aria-hidden="true">
           <div className="wallpaper" />
@@ -44,7 +86,29 @@ function Layout({ children }: { children: ReactNode }) {
             <Icon name={dark ? "moon" : "sun"} />
           </button>
         </div>
-        {wide === false && notice && <aside className="mobile-notice"><Icon name="grid"/><div><strong>{ui.mobile.title}</strong><p>{ui.mobile.body}</p></div><button aria-label={ui.mobile.dismiss} onClick={() => { setNotice(false); try { sessionStorage.setItem("portfolio-mobile-notice", "dismissed"); } catch {} }}>×</button></aside>}
+        {wide === false && notice && (
+          <aside className="mobile-notice">
+            <Icon name="grid" />
+            <div>
+              <strong>{ui.mobile.title}</strong>
+              <p>{ui.mobile.body}</p>
+            </div>
+            <button
+              aria-label={ui.mobile.dismiss}
+              onClick={() => {
+                setNotice(false);
+                try {
+                  sessionStorage.setItem(
+                    "portfolio-mobile-notice",
+                    "dismissed",
+                  );
+                } catch {}
+              }}
+            >
+              ×
+            </button>
+          </aside>
+        )}
         {children}
       </div>
       <noscript>
