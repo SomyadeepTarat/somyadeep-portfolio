@@ -44,3 +44,47 @@ The existing Vercel URL returned HTTP 200. Static export remains enabled; no hos
 Safari, Firefox, and Edge were not individually exercised. Screen-reader interaction and reduced-motion OS emulation were not separately audited; semantic labels, native modal focus management, keyboard controls, and reduced-motion CSS are implemented. No claim of universal 60fps is made.
 
 The complete semantic portfolio is present in exported HTML and retained in the DOM for the standard layout. No-JavaScript behavior uses a noscript style to reveal it; this was checked in source, not through a separate browser session with JavaScript disabled.
+
+# Phase 5–6 enhancement validation — 17 November 2026
+
+## Checkpoints
+
+| Checkpoint                                             | Lint / types / build | Desktop Lighthouse P / A / BP / SEO |
+| ------------------------------------------------------ | -------------------- | ----------------------------------- |
+| Welcome, search, links; window controls and navigation | Pass                 | 97 / 100 / 100 / 100                |
+| Richer apps, widgets, appearance                       | Pass                 | 97 / 100 / 100 / 100                |
+| Final polish                                           | Pass                 | 97 / 100 / 100 / 100                |
+
+Related groups were validated together rather than maintaining a separate build for every numbered subgroup. Lighthouse ran against the static export on loopback with desktop Chrome. These scores do not certify all app states, wallpapers, browser engines, or 60fps on other hardware.
+
+Seven regression tests pass. New coverage includes valid/invalid and malformed deep links, fuzzy results for companies/skills/actions, under-100ms search on the actual dataset, snap bounds, bulk actions, and explicit root navigation. Existing tests cover single instances, order, minimize/restore selection, viewport clamping, and maximize restoration.
+
+Browser checks in Codex Chromium:
+
+- Welcome and the revised dock render; desktop and 390×844 mobile layouts were inspected visually.
+- The mobile recommendation is dismissible and leaves the full semantic portfolio available.
+- Spotlight search for Muzigal lands at `#/experience/muzigal` with the correct company detail.
+- Project search produces an explicit empty state; Space opens Atlas Quick Look.
+- Terminal `open skills` opens Skills and changes the URL.
+- Mission Control lists eight open windows; selecting a card focuses its app.
+- Simple View and returning to Desktop View preserve all eight windows.
+- Missing assets remain labeled TODO; original project artwork is never presented as real screenshots.
+- GitHub cache refresh successfully captured 367 public contribution days. Browser failure keeps the rest of the page functional.
+
+## Scope decisions and remaining verification
+
+- Contact uses only `mailto:` at the user’s request. No messages were sent. There is no server-side delivery state or external form provider.
+- Mission Control renders lightweight app cards, not scaled live document previews.
+- Column view uses horizontally arranged project cards. No proficiency bars are fabricated; skill levels await user data.
+- Resume is one page. Native PDF printing is reached through Print/open PDF; the browser owns its print UI.
+- External embeds are opt-in and always have an external-link fallback. Cross-origin framing rejection cannot be detected reliably by the parent page.
+- Widgets can be toggled as a collection. Narrow/short screens hide secondary cards; maximized windows hide the collection.
+- Photos, awards, project roles, screenshots, demos, learning topics, and deleted-idea stories need user content (README checklist).
+- Automated Lighthouse accessibility passed the landing state. A full manual screen-reader audit, all wallpaper/appearance combinations, real Firefox/Safari/Edge, and midrange-device frame profiling were not performed.
+- Existing uncommitted portrait edits were preserved and excluded from enhancement commits.
+
+## Final resumed verification — 18 November 2026
+
+- Lint: pass with zero warnings/errors; typecheck: pass; all 7 tests: pass; production static build: pass; whitespace check: pass.
+- Fresh desktop Lighthouse: performance **97**, accessibility **100**, best practices **100**, SEO **100**.
+- Hash synchronization follows the active window without ref access during render. Window persistence is debounced; full-screen edge snap preserves restore bounds; malformed stored windows are filtered safely.
