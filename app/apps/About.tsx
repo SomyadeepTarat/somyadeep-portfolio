@@ -2,7 +2,7 @@ import Image from "next/image";
 import { profile, skills, copy } from "../data/profile";
 import type { AppProps } from "../desktop/registry";
 import { Icon } from "../desktop/icons";
-export default function About({ onNavigate }: AppProps) {
+export default function About({ onNavigate, selection }: AppProps) {
   return (
     <div className="about-app">
       <aside className="about-sidebar">
@@ -54,7 +54,7 @@ export default function About({ onNavigate }: AppProps) {
             View resume →
           </button>
         </div>
-        <details className="skills-disclosure">
+        <details className="skills-disclosure" open={!!selection && selection !== "education"}>
           <summary>
             Skills & certification <span>+</span>
           </summary>

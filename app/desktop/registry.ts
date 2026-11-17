@@ -1,6 +1,8 @@
 import { lazy } from "react";
 import type { IconName } from "./icons";
 export const apps = [
+ { id: "shortcuts", name: "Keyboard Shortcuts", icon: "grid", component: lazy(() => import("../apps/Shortcuts")), defaultSize: { width: 600, height: 520 } },
+  { id: "welcome", name: "Welcome", icon: "sun", component: lazy(() => import("../apps/Welcome")), defaultSize: { width: 680, height: 480 } },
   {
     id: "about",
     name: "About Me",

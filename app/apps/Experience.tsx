@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { experience, leadership, copy } from "../data/profile";
 import type { AppProps } from "../desktop/registry";
-export default function Experience({ selection }: AppProps) {
-  const [selected, setSelected] = useState(selection || experience[0].id);
+export default function Experience({ selection, onNavigate }: AppProps) {
+  const [selected] = useState(selection || experience[0].id);
   const item = experience.find((e) => e.id === selected) || experience[0];
   return (
     <div className="split-app">
@@ -13,7 +13,7 @@ export default function Experience({ selection }: AppProps) {
           <button
             className={item.id === e.id ? "selected" : ""}
             key={e.id}
-            onClick={() => setSelected(e.id)}
+            onClick={() => onNavigate("experience", e.id)}
           >
             <span className={`company-avatar ${e.id}`}>{e.initials}</span>
             <span>

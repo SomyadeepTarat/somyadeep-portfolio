@@ -6,7 +6,7 @@ import { projects, copy } from "../data/profile";
 import type { AppProps } from "../desktop/registry";
 import { Icon } from "../desktop/icons";
 import ProjectArtwork from "../components/ProjectArtwork";
-export default function Projects({ selection }: AppProps) {
+export default function Projects({ selection, onNavigate }: AppProps) {
   const [selected, setSelected] = useState<string | undefined>(selection);
   const [filter, setFilter] = useState("All projects");
   const project = projects.find((p) => p.id === selected);
@@ -89,7 +89,7 @@ export default function Projects({ selection }: AppProps) {
                   <button
                     className="project-tile"
                     key={p.id}
-                    onClick={() => setSelected(p.id)}
+                    onClick={() => onNavigate("projects", p.id)}
                   >
                     <ProjectArtwork id={p.id} />
                     <div className="tile-copy">

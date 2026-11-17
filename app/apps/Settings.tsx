@@ -1,6 +1,7 @@
 "use client";
 import { usePreferences } from "../desktop/preferences";
 import type { AppProps } from "../desktop/registry";
+import { ui } from "../data/interface";
 import { Icon } from "../desktop/icons";
 export default function Settings({ selection }: AppProps) {
   const { preferences, update } = usePreferences();
@@ -63,6 +64,7 @@ export default function Settings({ selection }: AppProps) {
           <span />
         </button>
       </section>
+      <section><button onClick={() => { try { localStorage.removeItem("portfolio-hints"); } catch {} window.dispatchEvent(new Event("portfolio-reset-hints")); }}>{ui.welcome.reset}</button></section>
       <details
         className="keyboard-guide"
         open={selection === "keyboard" || undefined}

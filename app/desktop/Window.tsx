@@ -1,7 +1,9 @@
 "use client";
-import { Suspense, useEffect, useRef, type PointerEvent } from "react";
+import { Suspense, useEffect, useRef, useState, type PointerEvent } from "react";
 import { apps, type AppId } from "./registry";
 import { clampBounds, useWindows, type WindowState } from "./store";
+import { ui } from "../data/interface";
+import { copyLink } from "./navigation";
 import { Icon } from "./icons";
 export default function Window({
   window: w,
@@ -14,6 +16,8 @@ export default function Window({
   active: boolean;
   onNavigate: (id: AppId, selection?: string) => void;
 }) {
+  const [snap, setSnap] = useState<"left" | "right" | "full" | null>(null);
+  const [copied, setCopied] = useState(false);
   const { dispatch } = useWindows();
   const ref = useRef<HTMLElement>(null);
   const gesture = useRef<{
@@ -75,6 +79,7 @@ export default function Window({
   const move = (event: PointerEvent<HTMLElement>) => {
     const g = gesture.current;
     if (!g) return;
+    if (!g.resize) setSnap(event.clientY < 50 ? "full" : event.clientX < 25 ? "left" : event.clientX > innerWidth - 25 ? "right" : null);
     const dx = event.clientX - g.x,
       dy = event.clientY - g.y;
     const b = g.resize
@@ -92,7 +97,7 @@ export default function Window({
   };
   // Keep minimized app components mounted so their internal navigation survives.
   return (
-    <section
+    <> {snap && <div className="snap-preview" style={{left: snap === "right" ? "50%" : 12, right: snap === "left" ? "50%" : 12 }}/>}<section
       ref={ref}
       id={`window-${w.id}`}
       className={`desktop-window ${active ? "active" : ""} ${w.maximized ? "maximized" : ""}`}
@@ -136,8 +141,8 @@ export default function Window({
         className="window-titlebar"
         onPointerDown={(e) => start(e)}
         onPointerMove={move}
-        onPointerUp={() => (gesture.current = null)}
-        onPointerCancel={() => (gesture.current = null)}
+        onPointerUp={() => { if(snap) dispatch({ type: "snap", id: w.id, side: snap, width: innerWidth, height: innerHeight }); setSnap(null); gesture.current = null; }}
+        onPointerCancel={() => { setSnap(null); gesture.current = null; }}
         onDoubleClick={(e) => {
           if (!(e.target as HTMLElement).closest("button"))
             dispatch({ type: "maximize", id: w.id });
@@ -164,7 +169,7 @@ export default function Window({
           <Icon name={app.icon} size={15} />
           {app.name}
         </span>
-        <span className="window-title-hint">Somyadeep</span>
+        <button className="window-title-hint" onClick={async () => { try { await copyLink(w.id, w.selection); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch { window.prompt(ui.link.failure, location.href); } }}>{copied ? ui.link.success : ui.link.copy}</button>
       </header>
       <div className="window-body">
         <Suspense fallback={<div className="loading">Opening {app.name}…</div>}>
@@ -185,6 +190,6 @@ export default function Window({
           onPointerCancel={() => (gesture.current = null)}
         />
       )}
-    </section>
+    </section></>
   );
 }

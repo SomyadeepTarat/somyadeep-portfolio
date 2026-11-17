@@ -5,13 +5,25 @@ import { WindowProvider, useWindows } from "./store";
 import { usePreferences } from "./preferences";
 import { AppIcon, Icon } from "./icons";
 import Window from "./Window";
-import { profile, projects, experience } from "../data/profile";
+import { profile } from "../data/profile";
+import Overlay from "./Overlay";
+import { shortcuts } from "./shortcuts";
+import { ui } from "../data/interface";
+import { parseRoute, navigateHash } from "./navigation";
+import { searchPortfolio, type SearchResult } from "./search";
 function Shell({ onStandard }: { onStandard: () => void }) {
   const { state, dispatch } = useWindows();
   const { dark, update } = usePreferences();
+  const [ready, setReady] = useState(false);
+  const [mission, setMission] = useState(false);
+  const [tour, setTour] = useState<number | null>(null);
+  const [context, setContext] = useState<{ x: number; y: number; app?: AppId } | null>(null);
   const [time, setTime] = useState("");
   const [spotlight, setSpotlight] = useState(false);
   const [query, setQuery] = useState("");
+  const [cursor, setCursor] = useState(0);
+  const [hint, setHint] = useState(false);
+  const dismissHint = () => { setHint(false); try { localStorage.setItem("portfolio-hints", "seen"); } catch {} };
   const [menu, setMenu] = useState<string | null>(null);
   const [intro, setIntro] = useState(false);
   const searchRef = useRef<HTMLDialogElement>(null);
@@ -27,15 +39,21 @@ function Shell({ onStandard }: { onStandard: () => void }) {
         selection,
         viewport: { width: innerWidth, height: innerHeight },
       });
+      navigateHash(id, selection);
       setMenu(null);
     },
     [dispatch],
   );
   useEffect(() => {
     const initialize = requestAnimationFrame(() => {
-      open("about");
+      const route = parseRoute(location.hash);
+      let restored = false;
+      if (!location.hash) { try { const saved = JSON.parse(localStorage.getItem('portfolio-windows') || 'null'); if (Array.isArray(saved) && saved.length) { dispatch({ type: 'restore', windows: saved, width: innerWidth, height: innerHeight }); restored = true; } } catch {} }
+      if (!restored) open(route?.id || "welcome", route?.selection);
+      setReady(true);
       try {
-        if (!sessionStorage.getItem("portfolio-visited")) setIntro(true);
+        if (!route && !sessionStorage.getItem("portfolio-visited")) setIntro(true);
+        setHint(!localStorage.getItem("portfolio-hints"));
       } catch {}
       const clock = () =>
         setTime(
@@ -49,6 +67,11 @@ function Shell({ onStandard }: { onStandard: () => void }) {
         );
       clock();
     });
+    const routeChange = () => { const route = parseRoute(location.hash); open(route?.id || "welcome", route?.selection); };
+    window.addEventListener("popstate", routeChange);
+    window.addEventListener("hashchange", routeChange);
+    const resetHints = () => setHint(true);
+    window.addEventListener("portfolio-reset-hints", resetHints);
     const timer = setInterval(
       () =>
         setTime(
@@ -66,11 +89,21 @@ function Shell({ onStandard }: { onStandard: () => void }) {
       dispatch({ type: "viewport", width: innerWidth, height: innerHeight });
     window.addEventListener("resize", resize);
     return () => {
+      window.removeEventListener("popstate", routeChange);
+      window.removeEventListener("hashchange", routeChange);
+      window.removeEventListener("portfolio-reset-hints", resetHints);
       cancelAnimationFrame(initialize);
       clearInterval(timer);
       window.removeEventListener("resize", resize);
     };
   }, [dispatch, open]);
+  useEffect(() => { if (ready) { try { localStorage.setItem('portfolio-windows', JSON.stringify(state.windows)); } catch {} } }, [ready, state.windows]);
+  useEffect(() => {
+    if (tour === null) return;
+    const target = document.querySelector(ui.tour[tour].target);
+    target?.classList.add('tour-highlight');
+    return () => target?.classList.remove('tour-highlight');
+  }, [tour]);
   const dismissIntro = useCallback(() => {
     setIntro(false);
     try {
@@ -86,6 +119,9 @@ function Shell({ onStandard }: { onStandard: () => void }) {
   const showSearch = useCallback(() => {
     previousFocus.current = document.activeElement as HTMLElement;
     setQuery("");
+    setCursor(0);
+    setHint(false);
+    try { localStorage.setItem("portfolio-hints", "seen"); } catch {}
     setSpotlight(true);
     setMenu(null);
   }, []);
@@ -98,52 +134,40 @@ function Shell({ onStandard }: { onStandard: () => void }) {
   }, [spotlight]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        showSearch();
-      }
-      if (e.key === "Escape" && !spotlight) {
-        if (intro) {
-          dismissIntro();
-          return;
-        }
-        if (menu) {
-          setMenu(null);
-          return;
-        }
-        if (active) {
-          dispatch({ type: "close", id: active.id });
-          document.getElementById(`dock-${active.id}`)?.focus();
-        }
+      if (intro) { e.preventDefault(); dismissIntro(); return; }
+      if ((e.target as HTMLElement).closest('input,textarea,select,[contenteditable="true"]')) return;
+      if (document.querySelector('dialog[open]')) return;
+      const shortcut = shortcuts.find(s => s.key.toLowerCase() === e.key.toLowerCase() && s.modifiers === (e.metaKey || e.ctrlKey));
+      const action = e.ctrlKey && e.key === 'ArrowUp' ? 'mission' : shortcut?.action;
+      if (!action) return;
+      e.preventDefault();
+      if (action === 'search') showSearch();
+      if (action === 'mission') setMission(v => !v);
+      if (action === 'shortcuts') open('shortcuts');
+      if (action === 'cycle') { const list = state.windows.filter(w => !w.minimized); if(list.length) dispatch({ type: 'focus', id: list[0].id }); }
+      if ((action === 'close' || action === 'minimize') && active) dispatch({ type: action, id: active.id });
+      if (action === 'escape') {
+        if (context) setContext(null);
+        else if (menu) setMenu(null);
+        else if (active) { dispatch({ type: 'close', id: active.id }); document.getElementById(`dock-${active.id}`)?.focus(); }
       }
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [active, dispatch, spotlight, menu, intro, dismissIntro, showSearch]);
-  const results = [
-    ...apps.map((a) => ({
-      id: a.id,
-      label: a.name,
-      category: "Application",
-      selection: undefined as string | undefined,
-    })),
-    ...projects.map((p) => ({
-      id: "projects" as const,
-      label: p.name,
-      category: "Project",
-      selection: p.id,
-    })),
-    ...experience.map((e) => ({
-      id: "experience" as const,
-      label: e.company,
-      category: e.role,
-      selection: e.id,
-    })),
-  ].filter((r) =>
-    `${r.label} ${r.category}`.toLowerCase().includes(query.toLowerCase()),
-  );
+  }, [active, dispatch, spotlight, menu, intro, dismissIntro, showSearch, open, state.windows, context]);
+  const results = searchPortfolio(query);
+  const selectResult = (r: SearchResult) => {
+    previousFocus.current = null;
+    setSpotlight(false);
+    if (r.action === 'download') { const a = document.createElement('a'); a.href = profile.resume; a.download = ''; a.click(); }
+    else if (r.action === 'theme') update({ theme: dark ? 'light' : 'dark' });
+    else if (r.selection === 'contact') location.assign(`mailto:${profile.email}`);
+    else open(r.id, r.selection);
+  };
   const menuActions: Record<string, { label: string; action: () => void }[]> = {
     File: [
+      { label: "Download Resume", action: () => { const a = document.createElement("a"); a.href = profile.resume; a.download = ""; a.click(); } },
+      { label: ui.link.copy, action: () => { navigator.clipboard.writeText(location.href).catch(() => window.prompt(ui.link.failure, location.href)); } },
       { label: "Open resume", action: () => open("resume") },
       {
         label: "Contact Somyadeep ↗",
@@ -154,10 +178,15 @@ function Shell({ onStandard }: { onStandard: () => void }) {
     ],
     Edit: [{ label: "Search portfolio…", action: showSearch }],
     View: [
+      { label: "Enter / exit full screen", action: () => { if(document.fullscreenElement) document.exitFullscreen().catch(() => {}); else document.documentElement.requestFullscreen?.().catch(() => {}); } },
       { label: "Appearance & wallpaper", action: () => open("settings") },
-      { label: "Standard portfolio", action: onStandard },
+      { label: ui.simple, action: onStandard },
     ],
     Window: [
+      { label: "Mission Control", action: () => setMission(true) },
+      { label: "Minimize All", action: () => dispatch({ type: "minimizeAll" }) },
+      { label: "Close All", action: () => dispatch({ type: "closeAll" }) },
+      ...(active ? (["left", "right"] as const).map(side => ({ label: `Tile ${side}`, action: () => dispatch({ type: "snap", id: active.id, side, width: innerWidth, height: innerHeight }) })) : []),
       ...apps.map((a) => ({ label: a.name, action: () => open(a.id) })),
       ...(active
         ? [
@@ -173,12 +202,16 @@ function Shell({ onStandard }: { onStandard: () => void }) {
         : []),
     ],
     Help: [
+      { label: ui.guidedTour, action: () => { open("welcome"); setTour(0); } },
+      { label: ui.simple, action: onStandard },
+      { label: "About This Portfolio", action: () => open("about") },
+      { label: "Welcome", action: () => open("welcome") },
       { label: "Search · ⌘ / Ctrl K", action: showSearch },
-      { label: "Keyboard guide", action: () => open("settings", "keyboard") },
+      { label: "Keyboard guide", action: () => open("shortcuts") },
     ],
   };
   return (
-    <main className="desktop" aria-label="Portfolio desktop">
+    <main className="desktop" aria-label="Portfolio desktop" onContextMenu={e => { if ((e.target as HTMLElement).closest(".desktop-window,input,textarea,a")) return; e.preventDefault(); const dock = (e.target as HTMLElement).closest("[data-app]") as HTMLElement; setContext({ x: Math.min(e.clientX, innerWidth - 240), y: Math.min(e.clientY, innerHeight - 230), app: dock?.dataset.app as AppId }); }}>
       <div className="wallpaper" aria-hidden="true" />
       <header className="menubar">
         <button
@@ -218,7 +251,7 @@ function Shell({ onStandard }: { onStandard: () => void }) {
             </div>
           ))}
         </nav>
-        <div className="menu-status">
+        <div className="menu-status"><button className="simple-toggle" onClick={onStandard}>{ui.simple}</button><button aria-label="Mission Control" onClick={() => setMission(true)}><Icon name="grid" size={16}/></button>
           <span
             className="connection"
             title="Decorative connection indicator"
@@ -234,7 +267,7 @@ function Shell({ onStandard }: { onStandard: () => void }) {
             <Icon name={dark ? "moon" : "sun"} size={16} />
           </button>
           <button
-            onClick={showSearch}
+            className="search-trigger" onClick={showSearch}
             aria-label="Search portfolio (Command or Control K)"
           >
             <Icon name="search" size={16} />
@@ -257,7 +290,7 @@ function Shell({ onStandard }: { onStandard: () => void }) {
         ].map((file) => (
           <button
             key={file.id}
-            onDoubleClick={() => open(file.id)}
+            onDoubleClick={() => { dismissHint(); open(file.id); }}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
@@ -280,6 +313,7 @@ function Shell({ onStandard }: { onStandard: () => void }) {
           onNavigate={open}
         />
       ))}
+      {hint && <div className="first-hint"><span>{ui.welcome.hint}</span><button onClick={dismissHint}>{ui.welcome.dismiss}</button></div>}
       <div className="desktop-footer">
         <span>DESIGNED FOR EXPLORATION</span>
         <button onClick={showSearch}>
@@ -289,7 +323,7 @@ function Shell({ onStandard }: { onStandard: () => void }) {
       <nav className="dock" aria-label="Portfolio applications">
         {apps.map((app) => (
           <button
-            id={`dock-${app.id}`}
+            id={`dock-${app.id}`} data-app={app.id}
             key={app.id}
             aria-label={`Open ${app.name}`}
             aria-pressed={active?.id === app.id}
@@ -330,10 +364,12 @@ function Shell({ onStandard }: { onStandard: () => void }) {
             <Icon name="search" size={24} />
             <input
               autoFocus
-              placeholder="Search apps, projects, experience…"
+              placeholder={ui.search.placeholder}
+              role="combobox" aria-expanded={spotlight} aria-controls="search-list" aria-autocomplete="list" aria-activedescendant={results[cursor] ? `result-${cursor}` : undefined}
+              onKeyDown={e => { if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); setCursor(c => (c + (e.key === "ArrowDown" ? 1 : -1) + results.length) % Math.max(1, results.length)); } if (e.key === "Enter" && results[cursor]) { e.preventDefault(); selectResult(results[cursor]); } }}
               aria-label="Search portfolio"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => { setQuery(e.target.value); setCursor(0); }}
             />
             <button
               onClick={() => setSpotlight(false)}
@@ -342,19 +378,15 @@ function Shell({ onStandard }: { onStandard: () => void }) {
               <kbd>esc</kbd>
             </button>
           </label>
-          <div className="search-results" aria-live="polite">
+          {!query && <div className="search-suggestions">{ui.search.suggestions.map(s => <button key={s} onClick={() => { setQuery(s); setCursor(0); }}>{s} ↗</button>)}</div>}
+          <div id="search-list" role="listbox" className="search-results">
             {results.length ? (
-              results.map((r) => (
+              results.map((r, i) => (
                 <button
-                  key={`${r.id}-${r.selection || "app"}`}
-                  onClick={() => {
-                    previousFocus.current = null;
-                    setSpotlight(false);
-                    open(r.id, r.selection);
-                    requestAnimationFrame(() =>
-                      document.getElementById(`window-${r.id}`)?.focus(),
-                    );
-                  }}
+                  key={`${r.id}-${r.selection || r.label}`}
+                  id={`result-${i}`} role="option" aria-selected={cursor === i}
+                  onClick={() => selectResult(r)}
+
                 >
                   <AppIcon name={apps.find((a) => a.id === r.id)!.icon} small />
                   <span>
@@ -365,12 +397,15 @@ function Shell({ onStandard }: { onStandard: () => void }) {
                 </button>
               ))
             ) : (
-              <p>No results. Try “Atlas” or “Experience”.</p>
+              <p>{ui.search.empty}</p>
             )}
           </div>
-          <footer>Navigate with Tab · Open with Enter</footer>
+          <footer>{ui.search.footer}</footer>
         </div>
       </dialog>
+      {context && <><div className="context-dismiss" onClick={() => setContext(null)}/><div className="context-menu" style={{ left: context.x, top: context.y }}>{(context.app ? [{ label: 'Open', action: () => open(context.app!) }, { label: 'Close', action: () => dispatch({ type: 'close', id: context.app! }) }, { label: 'Show projects', action: () => open('projects') }] : [{ label: 'Change Wallpaper', action: () => open('settings') }, { label: 'Open Settings', action: () => open('settings') }, { label: 'About This Portfolio', action: () => open('about') }]).map(item => <button key={item.label} onClick={() => { item.action(); setContext(null); }}>{item.label}</button>)}</div></>}
+      {mission && <Overlay title="Mission Control" onClose={() => setMission(false)}><div className="mission-grid">{state.windows.map(w => { const a = apps.find(a => a.id === w.id)!; return <button key={w.id} onClick={() => { open(w.id, w.selection); setMission(false); }}><AppIcon name={a.icon}/><strong>{a.name}</strong><small>{w.selection || (w.minimized ? 'Minimized' : 'Open')}</small></button>; })}{!state.windows.length && <button onClick={() => { open('welcome'); setMission(false); }}>Open Welcome</button>}</div></Overlay>}
+      {tour !== null && <Overlay title={ui.tour[tour].title} className="tour-overlay" onClose={() => setTour(null)}><p>{ui.tour[tour].body}</p><footer><span>{tour + 1} / {ui.tour.length}</span><button className="primary-button" onClick={() => setTour(tour === ui.tour.length - 1 ? null : tour + 1)}>{tour === ui.tour.length - 1 ? ui.done : ui.next} →</button></footer></Overlay>}
       {intro && (
         <dialog
           ref={introRef}
