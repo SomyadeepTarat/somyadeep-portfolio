@@ -3052,3 +3052,497 @@ html {
     height: 75px;
   }
 }
+
+/* Shared Apple-inspired surfaces and editorial rhythm. */
+:root {
+  --bg: #ffffff;
+  --solid: #f5f5f7;
+  --sidebar: #f5f5f7;
+  --panel: rgba(255, 255, 255, 0.78);
+  --ink: #1d1d1f;
+  --muted: #6e6e73;
+  --line: rgba(29, 29, 31, 0.09);
+  --accent: #0071e3;
+  --shadow: 0 24px 72px rgba(0, 0, 0, 0.12);
+  --sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter,
+    "Helvetica Neue", Arial, sans-serif;
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --glass: saturate(180%) blur(20px);
+}
+:root[data-theme="dark"] {
+  --bg: #000000;
+  --solid: #1c1c1e;
+  --sidebar: #161618;
+  --panel: rgba(29, 29, 31, 0.82);
+  --ink: #f5f5f7;
+  --muted: #a1a1a6;
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: #2997ff;
+  --shadow:
+    0 28px 80px rgba(0, 0, 0, 0.48), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+button,
+a,
+summary {
+  transition:
+    background 240ms var(--ease),
+    color 240ms var(--ease),
+    box-shadow 240ms var(--ease),
+    transform 240ms var(--ease);
+}
+.primary-button,
+.standard-hero-actions .primary-button {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 980px;
+  padding: 12px 22px;
+  font-size: 15px;
+}
+.primary-button:active {
+  transform: scale(0.98);
+}
+input {
+  border-radius: 12px;
+}
+input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+[data-theme="dark"] .wallpaper {
+  filter: none;
+  background:
+    radial-gradient(ellipse at 70% 20%, #303942, transparent 55%),
+    radial-gradient(ellipse at 15% 80%, #20242c, transparent 60%), #08090b;
+}
+[data-theme="dark"] .wallpaper:before,
+[data-theme="dark"] .wallpaper:after {
+  background: linear-gradient(180deg, #ffffff06, #00000020);
+  box-shadow:
+    0 -1px 0 #ffffff10,
+    0 -30px 90px #ffffff04;
+}
+.menubar,
+.dock {
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+.desktop-window {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+[data-theme="dark"] .window-titlebar {
+  background: rgba(44, 44, 46, 0.65);
+}
+[data-theme="dark"] .desktop-widget {
+  background: rgba(28, 28, 30, 0.82);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.boot-screen,
+[data-theme="dark"] .boot-screen {
+  padding: 48px 24px;
+  text-align: center;
+  background:
+    radial-gradient(
+      ellipse at 50% 80%,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 65%
+    ),
+    var(--bg);
+  overflow-y: auto;
+}
+.boot-screen .lock-portrait {
+  width: 88px;
+  height: 104px;
+  object-fit: cover;
+  border-radius: 28px;
+  margin: 0 0 32px;
+  box-shadow: 0 16px 48px #00000014;
+}
+.boot-screen .eyebrow {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+.boot-screen h2 {
+  font-size: clamp(42px, 6vw, 80px);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.06;
+  margin: 24px 0;
+}
+.boot-screen p {
+  font-size: 19px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.boot-screen button {
+  background: var(--accent);
+  color: #fff;
+  padding: 15px 26px;
+  border-radius: 980px;
+  font-size: 17px;
+  box-shadow: none;
+}
+.boot-screen button:hover {
+  transform: translateY(-2px);
+}
+.boot-screen small {
+  font-size: 13px;
+  color: var(--muted);
+  opacity: 1;
+  margin-top: 24px;
+}
+.projects-stack {
+  max-height: calc(100dvh - 170px);
+  overflow-y: auto;
+  padding: 12px;
+  border-radius: 24px;
+  background: var(--panel);
+  backdrop-filter: var(--glass);
+}
+.projects-stack button {
+  box-shadow: none;
+  min-height: 64px;
+  flex-shrink: 0;
+}
+.project-monogram {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px;
+  width: 100%;
+}
+.project-monogram > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.project-monogram strong {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+.project-monogram small {
+  color: var(--muted);
+}
+.project-art:has(.project-monogram) {
+  background: var(--solid);
+  color: var(--ink);
+}
+.standard-portfolio {
+  max-width: 1200px;
+  padding: 0 48px;
+  background: var(--bg);
+  font-size: 17px;
+  line-height: 1.5;
+}
+.standard-header {
+  position: sticky;
+  top: 0;
+  height: 56px;
+  z-index: 20;
+  background: var(--panel);
+  backdrop-filter: var(--glass);
+  border-bottom: 1px solid var(--line);
+}
+.standard-header nav {
+  font-size: 13px;
+  gap: 32px;
+  padding-right: 160px;
+}
+.standard-brand {
+  font-size: 28px;
+}
+.standard-hero {
+  padding: clamp(80px, 12vw, 144px) 0 96px;
+  text-align: center;
+}
+.standard-hero > .eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.standard-hero h1 {
+  font-size: clamp(44px, 6.5vw, 88px);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.045em;
+  max-width: 950px;
+  margin: 24px auto;
+}
+.standard-hero > p {
+  max-width: 650px;
+  font-size: 19px;
+  line-height: 1.6;
+  margin: 0 auto;
+}
+.standard-hero-actions {
+  justify-content: center;
+  gap: 28px;
+  font-size: 15px;
+  margin-top: 32px;
+}
+.standard-hero-actions > a:not(.primary-button) {
+  color: var(--accent);
+}
+.hero-profile {
+  justify-content: center;
+  margin-top: 56px;
+  text-align: left;
+}
+.hero-profile img {
+  width: 64px;
+  height: 76px;
+  border-radius: 18px;
+}
+.hero-profile strong {
+  font-size: 17px;
+  font-weight: 600;
+}
+.hero-profile span,
+.hero-profile small {
+  font-size: 13px;
+}
+.standard-section {
+  padding: clamp(80px, 10vw, 128px) 0;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 32px;
+}
+.standard-section > .eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.standard-section h2 {
+  font-size: clamp(36px, 4.5vw, 56px);
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  font-weight: 600;
+  margin: 16px 0 24px;
+}
+.section-description {
+  font-size: 17px;
+  max-width: 600px;
+  line-height: 1.5;
+  margin-bottom: 40px;
+}
+.standard-education,
+.standard-experience article,
+.standard-projects article,
+.standard-certification,
+.project-collection article {
+  background: var(--solid);
+  border: none;
+  border-radius: 24px;
+  box-shadow: none;
+}
+.standard-education,
+.standard-experience article {
+  padding: 32px;
+}
+.standard-experience,
+.standard-projects {
+  gap: 20px;
+}
+.standard-experience h3,
+.standard-education h3 {
+  font-weight: 600;
+  font-size: 24px;
+}
+.standard-role,
+.standard-education p,
+.standard-leadership p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+.standard-portfolio .highlights {
+  font-size: 15px;
+  line-height: 1.7;
+}
+.standard-portfolio .tags > span {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--muted) 8%, transparent);
+}
+.subsection-heading {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin: 48px 0 24px;
+}
+.standard-projects {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.standard-project-copy {
+  padding: 28px;
+}
+.standard-project-copy .section-kicker {
+  font-size: 11px;
+}
+.standard-project-copy h3 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+.standard-project-copy h4 {
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 45px;
+}
+.standard-project-copy > p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+.standard-project-copy summary,
+.project-collection summary {
+  font-size: 14px;
+  cursor: pointer;
+  padding: 12px 0;
+}
+.project-collection {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.project-collection article {
+  padding: 32px;
+  scroll-margin-top: 80px;
+}
+.project-collection h3 {
+  font-size: 28px;
+  letter-spacing: -0.025em;
+  margin: 16px 0;
+}
+.project-collection p {
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.project-collection details {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.standard-contact .email-link {
+  font-size: clamp(20px, 3vw, 36px);
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+.standard-socials,
+.standard-footer {
+  font-size: 13px;
+}
+.mobile-controls {
+  z-index: 30;
+  background: var(--panel);
+  backdrop-filter: var(--glass);
+  border-radius: 980px;
+}
+.mobile-notice {
+  background: var(--solid);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+.mobile-notice p {
+  font-size: 13px;
+  line-height: 1.5;
+}
+@media (max-width: 900px) {
+  .standard-projects {
+    grid-template-columns: 1fr;
+  }
+  .standard-projects article {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+  }
+  .standard-projects .project-art {
+    height: 100%;
+    min-height: 240px;
+  }
+}
+@media (max-width: 767px) {
+  .standard-portfolio {
+    padding: 0 24px;
+  }
+  .standard-header,
+  .mobile-notice + .standard-portfolio .standard-header {
+    height: 56px;
+  }
+  .standard-header nav {
+    padding-right: 0;
+    gap: 20px;
+    font-size: 12px;
+  }
+  .standard-hero {
+    padding: 80px 0;
+  }
+  .standard-hero > p {
+    font-size: 17px;
+  }
+  .standard-hero-actions {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .hero-profile {
+    gap: 16px;
+  }
+  .standard-experience,
+  .project-collection,
+  .standard-leadership {
+    grid-template-columns: 1fr;
+  }
+  .standard-projects article {
+    display: block;
+  }
+  .standard-projects .project-art {
+    height: 220px;
+  }
+  .standard-project-copy,
+  .standard-experience article,
+  .project-collection article {
+    padding: 24px;
+  }
+  .standard-project-copy h4 {
+    min-height: 0;
+  }
+  .standard-section {
+    padding: 80px 0;
+  }
+  .standard-education {
+    padding: 24px;
+  }
+  .standard-education h3 {
+    font-size: 24px;
+  }
+  .standard-hero > .eyebrow {
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  button,
+  a,
+  summary {
+    transition: none;
+  }
+}
+@media (max-width: 767px) {
+  .standard-header nav {
+    gap: 12px;
+    padding-right: 40px;
+  }
+}
+
+/* White button labels retain AA contrast in both appearances. */
+.primary-button,
+.standard-hero-actions .primary-button,
+.boot-screen button {
+  background: #0071e3;
+}

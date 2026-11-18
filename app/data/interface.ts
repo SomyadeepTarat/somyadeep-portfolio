@@ -70,7 +70,7 @@ export const ui = {
     empty: "No projects match these filters.",
     views: ["grid", "list", "columns"] as const,
     quick: "Quick Look",
-    assets: "Original concept artwork · TODO: project screenshots",
+    assets: "Original concept artwork",
     role: "TODO: confirm project role",
   },
   notes: {
@@ -124,8 +124,8 @@ export const ui = {
   widgets: {
     clock: "Local time",
     status: "Right now",
-    learning: "Currently learning",
-    learningTodo: "TODO: add current learning topics",
+    learning: "Currently studying",
+    learningTodo: "Computer Science & Engineering at VIT",
     latest: "Featured project",
     github: "GitHub contributions",
     unavailable:
@@ -155,7 +155,7 @@ export const ui = {
     dynamic: "dynamic",
   },
   boot: {
-    enter: "Click or press any key to enter",
+    enter: "Enter my workspace",
     subtitle: "A place for things I build.",
   },
 };

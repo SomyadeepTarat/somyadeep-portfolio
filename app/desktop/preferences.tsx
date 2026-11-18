@@ -29,7 +29,7 @@ export const initialPreferences: Preferences = {
   widgets: true,
 };
 export const accents: Record<string, { light: string; dark: string }> = {
-  blue: { light: "#365f8a", dark: "#a5c8f2" },
+  blue: { light: "#0071e3", dark: "#2997ff" },
   teal: { light: "#25665e", dark: "#8bd4bf" },
   violet: { light: "#67508d", dark: "#cbb3ee" },
   rose: { light: "#92516a", dark: "#efb1c5" },

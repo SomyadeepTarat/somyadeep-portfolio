@@ -229,8 +229,6 @@ function Shell({ onStandard }: { onStandard: () => void }) {
   useEffect(() => {
     if (!intro) return;
     introRef.current?.showModal();
-    const timer = setTimeout(dismissIntro, 1800);
-    return () => clearTimeout(timer);
   }, [intro, dismissIntro]);
   const showSearch = useCallback(() => {
     previousFocus.current = document.activeElement as HTMLElement;
@@ -253,11 +251,7 @@ function Shell({ onStandard }: { onStandard: () => void }) {
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       if (document.querySelector(".desktop")?.closest("[hidden]")) return;
-      if (intro) {
-        e.preventDefault();
-        dismissIntro();
-        return;
-      }
+      if (intro) return;
       if (
         (e.target as HTMLElement).closest(
           'input,textarea,select,[contenteditable="true"]',
@@ -286,6 +280,7 @@ function Shell({ onStandard }: { onStandard: () => void }) {
       if (action === "escape") {
         if (context) setContext(null);
         else if (menu) setMenu(null);
+        else if (stack) setStack(false);
         else if (active) {
           dispatch({ type: "close", id: active.id });
           document.getElementById(`dock-${active.id}`)?.focus();
@@ -297,6 +292,7 @@ function Shell({ onStandard }: { onStandard: () => void }) {
   }, [
     active,
     dispatch,
+    stack,
     spotlight,
     menu,
     intro,
@@ -440,6 +436,22 @@ function Shell({ onStandard }: { onStandard: () => void }) {
     <main
       className="desktop"
       aria-label="Portfolio desktop"
+      onPointerDown={(event) => {
+        const target = event.target as HTMLElement;
+        if (!target.closest(".projects-stack, .dock-stack-button"))
+          setStack(false);
+        if (!target.closest(".menu-container")) setMenu(null);
+        if (!target.closest(".context-menu")) setContext(null);
+        if (
+          target.closest(
+            ".desktop-window, .dock, .menubar, dialog, button, a, input, .desktop-widget, .projects-stack, .context-menu",
+          )
+        )
+          return;
+        dispatch({ type: "minimizeAll" });
+        setHoveredDock(null);
+        dismissHint();
+      }}
       onPointerMove={(e) => {
         if (
           !preferences.motion ||
@@ -665,9 +677,8 @@ function Shell({ onStandard }: { onStandard: () => void }) {
       </nav>
       {stack && (
         <div className="projects-stack">
-          {projects.map((p, i) => (
+          {projects.map((p) => (
             <button
-              style={{ transform: `rotate(${(i - 1) * 3}deg)` }}
               key={p.id}
               onClick={() => {
                 open("projects", p.id);
@@ -770,7 +781,7 @@ function Shell({ onStandard }: { onStandard: () => void }) {
             {results.length ? (
               results.map((r, i) => (
                 <button
-                  key={`${r.id}-${r.selection || r.label}`}
+                  key={`${r.category}-${r.id}-${r.selection || r.label}`}
                   id={`result-${i}`}
                   role="option"
                   aria-selected={cursor === i}
@@ -894,9 +905,7 @@ function Shell({ onStandard }: { onStandard: () => void }) {
           ref={introRef}
           className="boot-screen"
           aria-label="Welcome"
-          onCancel={dismissIntro}
-          onClick={dismissIntro}
-          onKeyDown={dismissIntro}
+          onCancel={(event) => event.preventDefault()}
         >
           <Image
             className="lock-portrait"
@@ -905,9 +914,16 @@ function Shell({ onStandard }: { onStandard: () => void }) {
             height={100}
             alt={profile.name}
           />
-          <div className="boot-progress" />
-          <h2>{profile.name}</h2>
-          <p>{profile.role}</p>
+          <span className="eyebrow">SOMYADEEP TARAT · NEW DELHI</span>
+          <h2>
+            A little curiosity.
+            <br />A world to explore.
+          </h2>
+          <p>
+            Welcome to my personal workspace.
+            <br />
+            Software, systems, and the ideas behind them.
+          </p>
           <button autoFocus onClick={dismissIntro}>
             {ui.boot.enter} <span>→</span>
           </button>

@@ -4,6 +4,7 @@ import {
   profile,
   experience,
   projects,
+  featuredProjectIds,
   skills,
   leadership,
   copy,
@@ -100,6 +101,7 @@ export default function StandardPortfolio() {
             </article>
           ))}
         </div>
+        <h3 className="subsection-heading">{copy.experience.leadership}</h3>
         <div className="standard-leadership">
           {leadership.map((l) => (
             <article key={l.organization}>
@@ -114,16 +116,48 @@ export default function StandardPortfolio() {
         <span className="eyebrow">03 / SELECTED WORK</span>
         <h2>{copy.projects.title}</h2>
         <p className="section-description">{copy.projects.intro}</p>
+        <h3 className="subsection-heading">Highlights</h3>
         <div className="standard-projects">
-          {projects.map((p) => (
-            <article key={p.id} id={`projects-${p.id}`}>
-              <ProjectArtwork id={p.id} />
-              <div className="standard-project-copy">
-                <span className="section-kicker">
-                  {p.number} / {p.category}
-                </span>
+          {projects
+            .filter((p) => featuredProjectIds.includes(p.id))
+            .map((p) => (
+              <article key={p.id} id={`projects-${p.id}`}>
+                <ProjectArtwork id={p.id} />
+                <div className="standard-project-copy">
+                  <span className="section-kicker">
+                    {p.number} / {p.category}
+                  </span>
+                  <h3>{p.name}</h3>
+                  <h4>{p.subtitle}</h4>
+                  <p>{p.description}</p>
+                  <div className="tags">
+                    {p.stack.map((t) => (
+                      <span key={t}>{t}</span>
+                    ))}
+                  </div>
+                  <details>
+                    <summary>
+                      {copy.projects.details} <span>+</span>
+                    </summary>
+                    <ul className="highlights">
+                      {p.highlights.map((h) => (
+                        <li key={h}>{h}</li>
+                      ))}
+                    </ul>
+                    <ProjectLinks project={p} />
+                  </details>
+                </div>
+              </article>
+            ))}
+        </div>
+        <h3 className="subsection-heading">More projects</h3>
+        <div className="project-collection">
+          {projects
+            .filter((p) => !featuredProjectIds.includes(p.id))
+            .map((p) => (
+              <article key={p.id} id={`projects-${p.id}`}>
+                <span className="section-kicker">{p.category}</span>
                 <h3>{p.name}</h3>
-                <h4>{p.subtitle}</h4>
                 <p>{p.description}</p>
                 <div className="tags">
                   {p.stack.map((t) => (
@@ -131,19 +165,16 @@ export default function StandardPortfolio() {
                   ))}
                 </div>
                 <details>
-                  <summary>
-                    {copy.projects.details} <span>+</span>
-                  </summary>
+                  <summary>Inside the project</summary>
                   <ul className="highlights">
                     {p.highlights.map((h) => (
                       <li key={h}>{h}</li>
                     ))}
                   </ul>
-                  <ProjectLinks project={p} />
                 </details>
-              </div>
-            </article>
-          ))}
+                <ProjectLinks project={p} />
+              </article>
+            ))}
         </div>
       </section>
       <section className="standard-section" id="skills">

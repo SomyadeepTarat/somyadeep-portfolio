@@ -1,4 +1,4 @@
-/** Resume is the source of truth. null fields deliberately remain TODO. */
+/** Profile from the supplied resume; project sources documented in docs/project-sources.md. */
 export const profile = {
   name: "Somyadeep Tarat",
   role: "Computer Science Student & Developer",
@@ -6,7 +6,7 @@ export const profile = {
   bio: "I’m a computer science student at VIT, building across backend engineering, machine learning, and AI systems. My work explores how reliable software and grounded intelligence can turn complex problems into useful tools.",
   email: "sayantarat@gmail.com",
   phone: "+91 9811872941",
-  location: null,
+  location: "New Delhi",
   github: "https://github.com/SomyadeepTarat",
   linkedin: "https://www.linkedin.com/in/somyadeep-tarat",
   site: "https://somyadeep-portfolio.vercel.app",
@@ -155,7 +155,7 @@ export const projects: Project[] = [
       "Implemented document ingestion, text chunking, embeddings, vector retrieval, and context construction for evidence-grounded LLM responses, with structured Pydantic outputs and retry policies.",
       "Integrated locally served LLMs using Ollama; developed unit tests and applied static analysis and type checking to improve maintainability.",
     ],
-    github: null,
+    github: "https://github.com/SomyadeepTarat/Atlas",
     live: null,
     screenshot: null,
   },
@@ -172,13 +172,13 @@ export const projects: Project[] = [
       "Developed a deterministic retrofit simulation approach to estimate energy savings, carbon reduction, and financial impact across individual upgrades and retrofit combinations.",
       "Designed a hybrid architecture separating numerical calculations and feasibility checks from LLM-generated explanations, enabling grounded what-if analysis and transparent recommendations.",
     ],
-    github: null,
+    github: "https://github.com/SomyadeepTarat/Megathon",
     live: null,
     screenshot: null,
   },
   {
     id: "fraudgraph",
-    name: "FraudGraph AI",
+    name: "FraudDetectAI",
     subtitle: "Graph-Based Fraud Detection",
     category: "Machine learning",
     number: "03",
@@ -189,11 +189,121 @@ export const projects: Project[] = [
       "Modeled financial transactions as sender-receiver graphs and engineered transaction, node, and network-level features for fraud classification.",
       "Built and evaluated supervised ML baselines against graph-enhanced models, analyzing the contribution of relational features to transaction risk scoring.",
     ],
-    github: null,
+    github: "https://github.com/SomyadeepTarat/FraudDetectAI",
+    live: null,
+    screenshot: null,
+  },
+  {
+    id: "brokestox",
+    name: "BrokeStox",
+    subtitle: "Agent-based market simulation",
+    category: "Simulation",
+    number: "04",
+    description:
+      "An interactive market simulator for exploring trades, agent behavior, and buyer–seller negotiation.",
+    stack: ["Python", "FastAPI", "Next.js", "TypeScript"],
+    highlights: [
+      "Validates trades against agent roles, cash, and inventory.",
+      "Provides step-by-step market exploration, trade history, and agent inspection.",
+      "Models offers, counteroffers, acceptance, and rejection with negotiation replay.",
+    ],
+    github: "https://github.com/SomyadeepTarat/BrokeStox",
+    live: null,
+    screenshot: null,
+  },
+  {
+    id: "kairo",
+    name: "Kairo",
+    subtitle: "Local-first agent execution",
+    category: "AI infrastructure",
+    number: "05",
+    description:
+      "An inspectable execution harness with a custom asynchronous kernel, typed workspace tools, and persistent run history.",
+    stack: ["Python", "PostgreSQL", "FastAPI", "Alembic"],
+    highlights: [
+      "Persists execution events and tool records in PostgreSQL.",
+      "Exposes a read-only API for inspecting runs and their history.",
+      "Current demos use a scripted model; live inference and recovery are future milestones.",
+    ],
+    github: "https://github.com/SomyadeepTarat/Kairo",
+    live: null,
+    screenshot: null,
+  },
+  {
+    id: "netguard",
+    name: "NetGuard",
+    subtitle: "Evidence-aware network observatory",
+    category: "Network security",
+    number: "06",
+    description:
+      "A passive network observatory that connects traffic analysis with explainable threat evidence and observation-quality checks.",
+    stack: ["Python", "FastAPI", "React", "TypeScript", "SQLite"],
+    highlights: [
+      "Combines rules, a calibrated SVM, and novelty detection with capture-quality telemetry.",
+      "Replays packet captures under controlled observation loss to study detection robustness.",
+      "Tracks evidence lineage with append-only hash chains and exports investigation reports.",
+    ],
+    github: "https://github.com/SomyadeepTarat/NetGuard",
+    live: null,
+    screenshot: null,
+  },
+  {
+    id: "hex",
+    name: "Hex",
+    subtitle: "Connected hospital planning",
+    category: "Applied intelligence",
+    number: "07",
+    description:
+      "A synthetic hospital-network demo connecting patient service matching, reported availability, and capacity planning.",
+    stack: ["Python", "SQLite", "Machine learning"],
+    highlights: [
+      "Matches requested services with current hospital reports and explains alternatives.",
+      "Uses ridge autoregression to forecast next-day admissions on synthetic demand data.",
+      "Previews and audits planning changes with role checks and constrained resource allocation.",
+    ],
+    github: "https://github.com/SomyadeepTarat/Hex",
+    live: null,
+    screenshot: null,
+  },
+  {
+    id: "research",
+    name: "Research Project",
+    subtitle: "ClaimAudit · scientific claim verification",
+    category: "Research",
+    number: "08",
+    description:
+      "A research prototype comparing embedding similarity, natural language inference, and structural checks for scientific claims.",
+    stack: ["Python", "PyTorch", "Transformers", "Streamlit"],
+    highlights: [
+      "Checks numerical values and comparison directions against supplied evidence.",
+      "Evaluates three methods and ablations on 300 grouped synthetic examples.",
+      "Offers evidence-linked explanations and saved-result exploration; real-paper validation remains future work.",
+    ],
+    github: "https://github.com/SomyadeepTarat/ResearchProject",
+    live: null,
+    screenshot: null,
+  },
+  {
+    id: "stocker",
+    name: "Stocker",
+    subtitle: "Price signals meet financial news",
+    category: "Machine learning",
+    number: "09",
+    description:
+      "An educational ML pipeline combining price indicators and financial news to classify short-term stock movement.",
+    stack: ["Python", "XGBoost", "FastAPI", "Streamlit", "Docker"],
+    highlights: [
+      "Combines technical indicators, sentiment, and TF-IDF text features.",
+      "Uses time-based data splits to compare baseline classifiers with XGBoost.",
+      "Serves predictions and explanations through FastAPI and a Streamlit dashboard.",
+    ],
+    github: "https://github.com/SomyadeepTarat/Stocker",
     live: null,
     screenshot: null,
   },
 ];
+
+export const featuredProjectIds = ["atlas", "kew", "fraudgraph"];
 
 export const copy = {
   about: {
@@ -208,7 +318,7 @@ export const copy = {
   projects: {
     title: "Selected projects",
     intro:
-      "Three explorations in intelligence, reliability, and real-world problems.",
+      "From research agents to useful tools. A collection of things I’ve built.",
     screenshotTodo: "TODO: project screenshot",
     linksTodo: "TODO: repository and live demo links",
     details: "Inside the project",
@@ -216,7 +326,7 @@ export const copy = {
   experience: {
     title: "Learning by building",
     intro: "Hands-on experience turning technical ideas into working software.",
-    leadership: "Beyond the internship",
+    leadership: "Beyond the internships",
   },
   resume: {
     title: "The one-page overview",

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { projects, copy } from "../data/profile";
+import { projects, featuredProjectIds, copy } from "../data/profile";
 import { ui } from "../data/interface";
 import type { AppProps } from "../desktop/registry";
 import ProjectArtwork from "../components/ProjectArtwork";
@@ -9,6 +9,7 @@ import ProjectLinks from "../components/ProjectLinks";
 import Overlay from "../desktop/Overlay";
 export default function Projects({ selection, onNavigate }: AppProps) {
   const [filter, setFilter] = useState("");
+  const [featured, setFeatured] = useState(true);
   const [query, setQuery] = useState("");
   const [view, setView] = useState<"grid" | "list" | "columns">("grid");
   const [slide, setSlide] = useState(0);
@@ -18,6 +19,7 @@ export default function Projects({ selection, onNavigate }: AppProps) {
   const tags = [...new Set(projects.flatMap((p) => p.stack))];
   const matches = projects.filter(
     (p) =>
+      (!featured || featuredProjectIds.includes(p.id)) &&
       (!filter || p.stack.includes(filter)) &&
       `${p.name} ${p.subtitle} ${p.stack.join(" ")}`
         .toLowerCase()
@@ -73,7 +75,7 @@ export default function Projects({ selection, onNavigate }: AppProps) {
             <span key={t}>{t}</span>
           ))}
         </div>
-        <p className="todo-note">{ui.projects.role}</p>
+
         <h4>{copy.projects.details}</h4>
         <ul className="highlights">
           {p.highlights.map((h) => (
@@ -88,8 +90,20 @@ export default function Projects({ selection, onNavigate }: AppProps) {
     <div className="split-app projects-app">
       <aside className="app-sidebar">
         <button
-          className={!filter ? "selected" : ""}
+          className={featured ? "selected" : ""}
           onClick={() => {
+            setFeatured(true);
+            setQuery("");
+            setFilter("");
+            onNavigate("projects");
+          }}
+        >
+          Highlights <small className="count">3</small>
+        </button>
+        <button
+          className={!filter && !featured ? "selected" : ""}
+          onClick={() => {
+            setFeatured(false);
             setFilter("");
             if (project) onNavigate("projects");
           }}
@@ -105,6 +119,7 @@ export default function Projects({ selection, onNavigate }: AppProps) {
             key={t}
             className={filter === t ? "selected" : ""}
             onClick={() => {
+              setFeatured(false);
               setFilter(t);
               if (project) onNavigate("projects");
             }}
@@ -117,7 +132,14 @@ export default function Projects({ selection, onNavigate }: AppProps) {
         {project ? (
           <>
             <div className="project-toolbar">
-              <button onClick={() => onNavigate("projects")}>
+              <button
+                onClick={() => {
+                  setFeatured(false);
+                  setFilter("");
+                  setQuery("");
+                  onNavigate("projects");
+                }}
+              >
                 ← {ui.projects.all}
               </button>
               <button onClick={() => setQuick(project.id)}>
@@ -130,7 +152,7 @@ export default function Projects({ selection, onNavigate }: AppProps) {
           <>
             <header className="app-heading">
               <span className="eyebrow">{copy.projects.title}</span>
-              <h2>{copy.projects.title}</h2>
+              <h2>{featured ? "Highlights" : "All projects"}</h2>
               <p>{copy.projects.intro}</p>
             </header>
             <div className="finder-controls">
@@ -138,7 +160,10 @@ export default function Projects({ selection, onNavigate }: AppProps) {
                 aria-label={ui.projects.search}
                 placeholder={ui.projects.search}
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  if (e.target.value) setFeatured(false);
+                }}
               />
               <div className="segmented">
                 {ui.projects.views.map((v) => (

@@ -73,6 +73,18 @@ export default function Experience({ selection, onNavigate }: AppProps) {
               </ul>
             </section>
           ))}
+          <section className="leadership">
+            <h3>{copy.experience.leadership}</h3>
+            {leadership.map((l) => (
+              <div key={l.organization}>
+                <h3>
+                  {l.organization}
+                  <span>{l.role}</span>
+                </h3>
+                <p>{l.description}</p>
+              </div>
+            ))}
+          </section>
         </article>
       ) : (
         <article className="experience-detail">

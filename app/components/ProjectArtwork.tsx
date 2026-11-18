@@ -38,6 +38,12 @@ export default function ProjectArtwork({ id }: { id: string }) {
           <span className="kew-sun" />
           <span className="kew-leaf">⌁</span>
         </>
+      ) : id !== "fraudgraph" ? (
+        <div className="project-monogram">
+          <span>{project?.number}</span>
+          <strong>{project?.name}</strong>
+          <small>{project?.category}</small>
+        </div>
       ) : (
         <svg viewBox="0 0 300 170" fill="none">
           {[
