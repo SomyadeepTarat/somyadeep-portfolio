@@ -110,66 +110,121 @@ export default function Terminal({ onNavigate }: AppProps) {
   }
   return (
     <div className="terminal-app">
-      <p>{ui.terminal.greeting}</p>
-      <div role="log" aria-live="polite">
+      <header className="terminal-header">
+        <span className="terminal-emblem" aria-hidden="true">
+          &gt;_
+        </span>
+        <div>
+          <h2>Workspace terminal</h2>
+          <p>{ui.terminal.greeting}</p>
+        </div>
+        <span className="terminal-session">Interactive session</span>
+      </header>
+      <div
+        className="terminal-transcript"
+        role="log"
+        aria-live="polite"
+        aria-label="Command output"
+      >
         {lines.map((l, i) => (
-          <div key={i}>
+          <div className="terminal-entry" key={i}>
             <div className="terminal-command">
-              {ui.terminal.prompt} ~ % {l.command}
+              <span aria-hidden="true">❯</span>
+              <span>{l.command}</span>
             </div>
             <div className="terminal-output">{l.output}</div>
           </div>
         ))}
+        {!lines.length && (
+          <div className="terminal-empty">
+            <span aria-hidden="true">~</span>
+            <p>Your workspace, one command away.</p>
+            <small>
+              Start with <code>help</code> to see what’s possible.
+            </small>
+          </div>
+        )}
+        <div ref={end} />
       </div>
       <form
+        className="terminal-composer"
         onSubmit={(e) => {
           e.preventDefault();
           run();
         }}
       >
-        <label htmlFor="terminal-input">{ui.terminal.prompt} ~ %</label>
-        <input
-          id="terminal-input"
-          autoComplete="off"
-          autoCapitalize="off"
-          spellCheck={false}
-          aria-label={ui.terminal.placeholder}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-              e.preventDefault();
-              const next = Math.max(
-                0,
-                Math.min(
-                  history.length,
-                  index + (e.key === "ArrowUp" ? -1 : 1),
-                ),
-              );
-              setIndex(next);
-              setInput(history[next] || "");
-            }
-            if (e.key === "Tab") {
-              const choices = input.startsWith("open ")
-                ? apps.map((a) => `open ${a.id}`)
-                : input.startsWith("theme ")
-                  ? ["theme light", "theme dark"]
-                  : commands;
-              const matches = choices.filter((c) => c.startsWith(input));
-              if (matches.length) {
+        <label htmlFor="terminal-input">
+          <span>{ui.terminal.prompt}</span>
+          <span>~/portfolio</span>
+        </label>
+        <div className="terminal-input-row">
+          <span className="terminal-prompt-mark" aria-hidden="true">
+            ❯
+          </span>
+          <input
+            autoFocus
+            placeholder="Type a command…"
+            enterKeyHint="send"
+            id="terminal-input"
+            autoComplete="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            aria-label={ui.terminal.placeholder}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
                 e.preventDefault();
-                if (matches.length === 1) setInput(matches[0]);
-                else
-                  setLines((l) => [
-                    ...l,
-                    { command: input, output: matches.join(" · ") },
-                  ]);
+                const next = Math.max(
+                  0,
+                  Math.min(
+                    history.length,
+                    index + (e.key === "ArrowUp" ? -1 : 1),
+                  ),
+                );
+                setIndex(next);
+                setInput(history[next] || "");
               }
-            }
-          }}
-        />
+              if (e.key === "Tab") {
+                const choices = input.startsWith("open ")
+                  ? apps.map((a) => `open ${a.id}`)
+                  : input.startsWith("theme ")
+                    ? ["theme light", "theme dark"]
+                    : commands;
+                const matches = choices.filter((c) => c.startsWith(input));
+                if (matches.length) {
+                  e.preventDefault();
+                  if (matches.length === 1) setInput(matches[0]);
+                  else
+                    setLines((l) => [
+                      ...l,
+                      { command: input, output: matches.join(" · ") },
+                    ]);
+                }
+              }
+            }}
+          />
+          <button
+            type="submit"
+            className="terminal-submit"
+            aria-label="Run command"
+            disabled={!input.trim()}
+          >
+            ↵
+          </button>
+        </div>
+        <div className="terminal-input-hints" aria-hidden="true">
+          <span>
+            <kbd>↵</kbd> Run
+          </span>
+          <span>
+            <kbd>Tab</kbd> Complete
+          </span>
+          <span>
+            <kbd>↑ ↓</kbd> History
+          </span>
+        </div>
       </form>
-      <div ref={end} />
     </div>
   );
 }
