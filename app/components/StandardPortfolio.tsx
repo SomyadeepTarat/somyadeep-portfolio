@@ -116,7 +116,11 @@ export default function StandardPortfolio() {
         <span className="eyebrow">03 / SELECTED WORK</span>
         <h2>{copy.projects.title}</h2>
         <p className="section-description">{copy.projects.intro}</p>
-        <nav className="project-highlights" aria-label="Project highlights">
+        <nav
+          id="projects-highlights"
+          className="project-highlights"
+          aria-label="Project highlights"
+        >
           <h3>Highlights</h3>
           <div>
             {projects

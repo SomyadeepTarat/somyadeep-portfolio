@@ -57,3 +57,14 @@ test("bulk actions and snapped windows remain bounded", () => {
   state = windowReducer(state, { type: "closeAll" });
   assert.equal(state.windows.length, 0);
 });
+
+test("project Highlights is a valid shareable destination", () => {
+  assert.deepEqual(parseRoute(routeHash("projects", "highlights")), {
+    id: "projects",
+    selection: "highlights",
+  });
+  assert.deepEqual(parseRoute("#/projects/research"), {
+    id: "projects",
+    selection: "research",
+  });
+});

@@ -17,6 +17,7 @@ export function parseRoute(
     if (
       selection &&
       id === "projects" &&
+      selection !== "highlights" &&
       !projects.some((p) => p.id === selection)
     )
       return null;

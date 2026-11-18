@@ -9,7 +9,7 @@ import ProjectLinks from "../components/ProjectLinks";
 import Overlay from "../desktop/Overlay";
 export default function Projects({ selection, onNavigate }: AppProps) {
   const [filter, setFilter] = useState("");
-  const [featured, setFeatured] = useState(false);
+  const [featured, setFeatured] = useState(selection === "highlights");
   const [query, setQuery] = useState("");
   const [view, setView] = useState<"grid" | "list" | "columns">("grid");
   const [slide, setSlide] = useState(0);
@@ -95,7 +95,7 @@ export default function Projects({ selection, onNavigate }: AppProps) {
             setFeatured(true);
             setQuery("");
             setFilter("");
-            onNavigate("projects");
+            onNavigate("projects", "highlights");
           }}
         >
           Highlights{" "}
@@ -106,7 +106,7 @@ export default function Projects({ selection, onNavigate }: AppProps) {
           onClick={() => {
             setFeatured(false);
             setFilter("");
-            if (project) onNavigate("projects");
+            if (project || selection === "highlights") onNavigate("projects");
           }}
         >
           {ui.projects.all}
