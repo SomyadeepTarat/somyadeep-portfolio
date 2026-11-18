@@ -3546,3 +3546,127 @@ input:focus-visible {
 .boot-screen button {
   background: #0071e3;
 }
+
+/* Every project receives the same cover, proportions, and actions. */
+.project-highlights {
+  margin: 32px 0;
+}
+.project-highlights h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.project-highlights > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.project-highlights a {
+  display: inline-flex;
+  gap: 16px;
+  padding: 10px 16px;
+  border-radius: 980px;
+  background: var(--solid);
+  font-size: 14px;
+}
+.project-highlights a:hover {
+  color: var(--accent);
+}
+.standard-projects.uniform-projects {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+}
+.standard-projects.uniform-projects article {
+  display: flex;
+  flex-direction: column;
+  scroll-margin-top: 80px;
+}
+.uniform-projects .standard-project-copy {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.uniform-projects .standard-project-copy > p {
+  flex: 1;
+}
+.uniform-projects .tags {
+  min-height: 72px;
+  align-content: start;
+}
+.uniform-projects .project-links .about-actions {
+  margin-bottom: 0;
+}
+.project-art.project-cover,
+[data-theme="dark"] .project-art.project-cover {
+  position: relative;
+  height: 180px;
+  min-height: 180px;
+  flex: 0 0 180px;
+  overflow: hidden;
+  background: var(--sidebar);
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  padding: 24px;
+}
+.project-cover-number {
+  font-size: 88px;
+  font-weight: 600;
+  letter-spacing: -0.065em;
+  line-height: 1;
+  color: var(--muted);
+}
+.project-cover-category {
+  position: absolute;
+  bottom: 20px;
+  left: 24px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.project-cover-arrow {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  color: var(--muted);
+  font-size: 20px;
+}
+.finder-grid .project-tile {
+  display: flex;
+  flex-direction: column;
+}
+.finder-grid .project-cover {
+  width: 100%;
+}
+.finder-grid .tile-copy {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+}
+.finder-grid .tile-copy p {
+  flex: 1;
+}
+.finder-list .project-art.project-cover {
+  min-height: 100px;
+  height: 100%;
+  padding: 12px;
+}
+.finder-list .project-cover-number {
+  font-size: 48px;
+}
+.finder-list .project-cover-category,
+.finder-list .project-cover-arrow {
+  display: none;
+}
+@media (max-width: 1000px) {
+  .standard-projects.uniform-projects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .standard-projects.uniform-projects {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+}

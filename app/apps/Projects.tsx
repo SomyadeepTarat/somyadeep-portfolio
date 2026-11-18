@@ -9,7 +9,7 @@ import ProjectLinks from "../components/ProjectLinks";
 import Overlay from "../desktop/Overlay";
 export default function Projects({ selection, onNavigate }: AppProps) {
   const [filter, setFilter] = useState("");
-  const [featured, setFeatured] = useState(true);
+  const [featured, setFeatured] = useState(false);
   const [query, setQuery] = useState("");
   const [view, setView] = useState<"grid" | "list" | "columns">("grid");
   const [slide, setSlide] = useState(0);
@@ -98,7 +98,8 @@ export default function Projects({ selection, onNavigate }: AppProps) {
             onNavigate("projects");
           }}
         >
-          Highlights <small className="count">3</small>
+          Highlights{" "}
+          <small className="count">{featuredProjectIds.length}</small>
         </button>
         <button
           className={!filter && !featured ? "selected" : ""}
@@ -190,7 +191,7 @@ export default function Projects({ selection, onNavigate }: AppProps) {
                     }
                   }}
                 >
-                  <ProjectArtwork id={p.id} />
+                  <ProjectArtwork id={p.id} cover />
                   <div className="tile-copy">
                     <span>{p.number} ↗</span>
                     <h3>{p.name}</h3>

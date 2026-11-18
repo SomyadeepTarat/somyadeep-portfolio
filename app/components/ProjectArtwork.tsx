@@ -1,8 +1,22 @@
 import Image from "next/image";
 import { projects } from "../data/profile";
 /** Original schematic artwork, not product screenshots. */
-export default function ProjectArtwork({ id }: { id: string }) {
+export default function ProjectArtwork({
+  id,
+  cover = false,
+}: {
+  id: string;
+  cover?: boolean;
+}) {
   const project = projects.find((p) => p.id === id);
+  if (cover)
+    return (
+      <div className="project-art project-cover" aria-hidden="true">
+        <span className="project-cover-number">{project?.number}</span>
+        <span className="project-cover-category">{project?.category}</span>
+        <span className="project-cover-arrow">↗</span>
+      </div>
+    );
   if (project?.screenshot)
     return (
       <div className="project-art project-screenshot">

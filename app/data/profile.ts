@@ -303,7 +303,7 @@ export const projects: Project[] = [
   },
 ];
 
-export const featuredProjectIds = ["atlas", "kew", "fraudgraph"];
+export const featuredProjectIds = ["atlas", "kew", "fraudgraph", "research"];
 
 export const copy = {
   about: {
